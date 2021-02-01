@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Rust on Abhishek&#39;s blog (work in progress)</title>
-    <link>/tags/rust/</link>
+    <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/rust/</link>
     <description>Recent content in Rust on Abhishek&#39;s blog (work in progress)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Copyright notice</copyright>
-    <lastBuildDate>Wed, 20 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/rust/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 20 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/tags/rust/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Getting started with Rust and Redis</title>
-      <link>/posts/rust-redis-getting-started/</link>
+      <link>https://abhirockzz.github.io/abhirockzz.github.io/posts/rust-redis-getting-started/</link>
       <pubDate>Wed, 20 Jan 2021 00:00:00 +0000</pubDate>
       
-      <guid>/posts/rust-redis-getting-started/</guid>
+      <guid>https://abhirockzz.github.io/abhirockzz.github.io/posts/rust-redis-getting-started/</guid>
       <description>Are you learning Rust and looking for ways to get some hands-on practice with concrete examples? A good approach might be to try and integrate Rust with external systems.</description>
     </item>
     

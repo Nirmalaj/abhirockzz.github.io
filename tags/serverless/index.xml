@@ -2,27 +2,27 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>serverless on Abhishek&#39;s blog (work in progress)</title>
-    <link>/tags/serverless/</link>
+    <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/serverless/</link>
     <description>Recent content in serverless on Abhishek&#39;s blog (work in progress)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Copyright notice</copyright>
-    <lastBuildDate>Fri, 29 Mar 2019 00:00:00 +0000</lastBuildDate><atom:link href="/tags/serverless/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 29 Mar 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/tags/serverless/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Serverless Architectures and Patterns</title>
-      <link>/posts/serverless-talk-oracle-code/</link>
+      <link>https://abhirockzz.github.io/abhirockzz.github.io/posts/serverless-talk-oracle-code/</link>
       <pubDate>Fri, 29 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>/posts/serverless-talk-oracle-code/</guid>
+      <guid>https://abhirockzz.github.io/abhirockzz.github.io/posts/serverless-talk-oracle-code/</guid>
       <description>This talk covers a bunch of common Serverless use cases like Backend APIs, Real-Time systems, Integration and Automation (uses Fn and Oracle Functions as the serverless platform).</description>
     </item>
     
     <item>
       <title>Serverless Image Classification with TensorFlow</title>
-      <link>/posts/serverless-tensorflow-image-classification/</link>
+      <link>https://abhirockzz.github.io/abhirockzz.github.io/posts/serverless-tensorflow-image-classification/</link>
       <pubDate>Mon, 07 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>/posts/serverless-tensorflow-image-classification/</guid>
+      <guid>https://abhirockzz.github.io/abhirockzz.github.io/posts/serverless-tensorflow-image-classification/</guid>
       <description>Image classification is a canonical example used to demonstrate machine learning techniques. This post shows you how to run a TensorFlow-based image classification application on the recently announced cloud service Oracle Functions.</description>
     </item>
     
