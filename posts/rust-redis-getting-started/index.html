@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Getting started with Rust and Redis - Abhishek&#39;s blog (work in progress)</title><link rel="icon" type="image/png" href=icons/myicon.png /><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Getting started with Rust and Redis" />
+<meta property="og:description" content="Are you learning Rust and looking for ways to get some hands-on practice with concrete examples?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="abhirockzz.github.io/posts/rust-redis-getting-started/" />
+<meta property="article:published_time" content="2021-01-20T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-01-20T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Getting started with Rust and Redis"/>
+<meta name="twitter:description" content="Are you learning Rust and looking for ways to get some hands-on practice with concrete examples?"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/main.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/dark.css" media="(prefers-color-scheme: dark)" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom-dark.css" media="(prefers-color-scheme: dark)" />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="abhirockzz.github.iojs/main.js"></script>
+	<script src="abhirockzz.github.iojs/abc.js"></script>
+	<script src="abhirockzz.github.iojs/xyz.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="abhirockzz.github.io">
+	<h1 class="site-title"><a href="abhirockzz.github.io">Abhishek&#39;s blog (work in progress)</a></h1>
+	<div class="site-description"><h2>Mostly about Kafka, Databases, Kubernetes and other open source stuff</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/abhirockzz/" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/abhi_tweeter" title="Twitter"><i data-feather="twitter"></i></a><a href="https://www.linkedin.com/in/abhirockzz/" title="LinkedIn"><i data-feather="linkedin"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="abhirockzz.github.io/">Home</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/about">About</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/books">Books</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Getting started with Rust and Redis</h1>
+			<div class="meta">Posted at &mdash; Jan 20, 2021</div>
+		</div>
+
+		<div class="markdown">
+			<p>Are you learning <a href="https://www.rust-lang.org/">Rust</a> and looking for ways to get some hands-on practice with concrete examples? A good approach might be to try and integrate Rust with external systems. Why not try to use it with <a href="https://redis.io/">Redis</a>? It is a powerful, versatile database but dead simple to get started with!</p>
+<p>In this blog post, you will learn how to use the Rust programming language to interact with Redis using the <a href="https://github.com/mitsuhiko/redis-rs">redis-rs</a> client. We will walk through commonly used Redis data structures such as <a href="https://redis.io/topics/data-types-intro#redis-strings">String</a>, <a href="https://redis.io/topics/data-types-intro#redis-hashes">Hash</a>, <a href="https://redis.io/topics/data-types-intro#redis-lists">List</a> etc. The Redis client used in the sample code exposes both high and low-level APIs and you will see both these styles in action.</p>
+<blockquote>
+<p>Code is available on GitHub - <a href="https://github.com/abhirockzz/rust-redis-101">https://github.com/abhirockzz/rust-redis-101</a></p>
+</blockquote>
+<p>Redis is an in-memory data structure store which is often used as a database, cache, and message broker. It provides data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs, geospatial indexes, and streams.</p>
+<p>In this blog post, I have included instructions for <a href="https://docs.microsoft.com/azure/azure-cache-for-redis/?WT.mc_id=data-12975-abhishgu">Azure Cache for Redis</a>, but the sample application should work with any Redis instance. Azure Cache for Redis offers both the Redis open-source and a <a href="https://docs.microsoft.com/azure/azure-cache-for-redis/quickstart-create-redis-enterprise?WT.mc_id=data-12975-abhishgu">commercial product from Redis Labs</a> as a managed service.</p>
+<h2 id="pre-requisites">Pre-requisites</h2>
+<p>You will need <a href="https://www.rust-lang.org/tools/install">Rust</a> (version 1.39 or above) installed on your computer. If you intend to use Azure Cache for Redis, simply <a href="https://azure.microsoft.com/free/">create a free Azure subscription</a>, and <a href="https://docs.microsoft.com/azure/azure-cache-for-redis/quickstart-create-redis?WT.mc_id=data-12975-abhishgu">setup an Azure Cache for Redis instance</a> using the Azure portal.</p>
+<blockquote>
+<p>For the purposes of this tutorial, I would recommend setting up a <a href="https://docs.microsoft.com/azure/azure-cache-for-redis/cache-overview?WT.mc_id=data-12975-abhishgu#service-tiers">Basic tier instance</a> which is ideal for development/test and non-critical workloads.</p>
+</blockquote>
+<p>You can also choose to simply use the Redis Docker container as such:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker run --rm -p 6379:6379 redis
+</code></pre></div><p>That&rsquo;s it, you&rsquo;re ready to get started!</p>
+<h2 id="code-walk-through">Code walk through</h2>
+<p>For you to get a better understanding, this section covers a step-by-step walk through of the code. It covers all the functions, each of which covers a specific Redis data structure. It is followed by the <strong>Run the sample application</strong> section.</p>
+<h3 id="connect-to-redis">Connect to Redis</h3>
+<p>The <code>connect</code> function is used to establish a connection to Redis. It expects host name and the password to be passed in as environment variables <code>REDIS_HOSTNAME</code> and <code>REDIS_PASSWORD</code> respectively. The format for the connection URL is <code>&lt;uri scheme&gt;://&lt;username&gt;:&lt;password&gt;@&lt;hostname&gt;</code>.</p>
+<blockquote>
+<p>Azure Cache for Redis only accepts secure connections with <a href="https://docs.microsoft.com/azure/azure-cache-for-redis/cache-remove-tls-10-11?WT.mc_id=data-12975-abhishgu">TLS 1.2 as the minimum required version</a>. The URI scheme would be <code>rediss</code> in case of a TLS connection, otherwise it&rsquo;s <code>redis</code>.</p>
+</blockquote>
+<p>The call to <a href="https://docs.rs/redis/0.19.0/redis/struct.Client.html#method.open">redis::Client::open</a> performs basic validation while <a href="https://docs.rs/redis/0.19.0/redis/struct.Client.html#method.get_connection">get_connection()</a> actually initiates the connection - the program exits if the connectivity fails due to any reason such as an incorrect password.</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#719e07">fn</span> <span style="color:#268bd2">connect</span>() -&gt; <span style="color:#268bd2">redis</span>::Connection {
+    <span style="color:#586e75">//format - host:port
+</span><span style="color:#586e75"></span>    <span style="color:#268bd2">let</span> redis_host_name <span style="color:#719e07">=</span>
+        env::var(<span style="color:#2aa198">&#34;REDIS_HOSTNAME&#34;</span>).expect(<span style="color:#2aa198">&#34;missing environment variable REDIS_HOSTNAME&#34;</span>);
+    
+    <span style="color:#268bd2">let</span> redis_password <span style="color:#719e07">=</span> env::var(<span style="color:#2aa198">&#34;REDIS_PASSWORD&#34;</span>).unwrap_or_default();
+
+    <span style="color:#586e75">//if Redis server needs secure connection
+</span><span style="color:#586e75"></span>    <span style="color:#268bd2">let</span> uri_scheme <span style="color:#719e07">=</span> <span style="color:#719e07">match</span> env::var(<span style="color:#2aa198">&#34;IS_TLS&#34;</span>) {
+        <span style="color:#b58900">Ok</span>(_) <span style="color:#719e07">=&gt;</span> <span style="color:#2aa198">&#34;rediss&#34;</span>,
+        <span style="color:#b58900">Err</span>(_) <span style="color:#719e07">=&gt;</span> <span style="color:#2aa198">&#34;redis&#34;</span>,
+    };
+
+    <span style="color:#268bd2">let</span> redis_conn_url <span style="color:#719e07">=</span> format<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;{}://:{}@{}&#34;</span>, uri_scheme, redis_password, redis_host_name);
+
+    redis::Client::open(redis_conn_url)
+        .expect(<span style="color:#2aa198">&#34;Invalid connection URL&#34;</span>)
+        .get_connection()
+        .expect(<span style="color:#2aa198">&#34;failed to connect to Redis&#34;</span>)
+}
+</code></pre></div><h3 id="basic-operations-on-strings-and-integers">Basic operations on Strings and Integers</h3>
+<p>This function covers <a href="https://redis.io/commands/set">SET</a>, <a href="https://redis.io/commands/get">GET</a>, and <a href="https://redis.io/commands/incr">INCR</a> commands. The low-level API is used for <code>SET</code> and <code>GET</code>, which sets and retrieves the value for a key named <code>foo</code>. The <code>INCRBY</code> command is executed using a high-level API i.e. <a href="https://docs.rs/redis/0.19.0/redis/trait.Commands.html#method.incr">incr</a> increments the value of a key (named <code>counter</code>) by <code>2</code> followed by a call to <a href="https://docs.rs/redis/0.19.0/redis/trait.Commands.html#method.get">get</a> to retrieve it.</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#719e07">fn</span> <span style="color:#268bd2">basics</span>() {
+    <span style="color:#268bd2">let</span> <span style="color:#719e07">mut</span> conn <span style="color:#719e07">=</span> connect();
+    <span style="color:#268bd2">let</span> _: () <span style="color:#719e07">=</span> redis::cmd(<span style="color:#2aa198">&#34;SET&#34;</span>)
+        .arg(<span style="color:#2aa198">&#34;foo&#34;</span>)
+        .arg(<span style="color:#2aa198">&#34;bar&#34;</span>)
+        .query(<span style="color:#719e07">&amp;</span><span style="color:#719e07">mut</span> conn)
+        .expect(<span style="color:#2aa198">&#34;failed to execute SET for &#39;foo&#39;&#34;</span>);
+
+    <span style="color:#268bd2">let</span> bar: <span style="color:#b58900">String</span> <span style="color:#719e07">=</span> redis::cmd(<span style="color:#2aa198">&#34;GET&#34;</span>)
+        .arg(<span style="color:#2aa198">&#34;foo&#34;</span>)
+        .query(<span style="color:#719e07">&amp;</span><span style="color:#719e07">mut</span> conn)
+        .expect(<span style="color:#2aa198">&#34;failed to execute GET for &#39;foo&#39;&#34;</span>);
+    println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;value for &#39;foo&#39; = {}&#34;</span>, bar);
+
+    <span style="color:#268bd2">let</span> _: () <span style="color:#719e07">=</span> conn
+        .incr(<span style="color:#2aa198">&#34;counter&#34;</span>, <span style="color:#2aa198">2</span>)
+        .expect(<span style="color:#2aa198">&#34;failed to execute INCR for &#39;counter&#39;&#34;</span>);
+    <span style="color:#268bd2">let</span> val: <span style="color:#dc322f">i32</span> <span style="color:#719e07">=</span> conn
+        .get(<span style="color:#2aa198">&#34;counter&#34;</span>)
+        .expect(<span style="color:#2aa198">&#34;failed to execute GET for &#39;counter&#39;&#34;</span>);
+    println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;counter = {}&#34;</span>, val);
+}
+</code></pre></div><h3 id="how-to-use-a-hash-data-structure">How to use a Hash data structure?</h3>
+<p>The below code snippet demonstrates the functionality of a Redis <code>HASH</code> data structure. <a href="https://redis.io/commands/hset">HSET</a> is invoked using the low-level API to store information (<code>name</code>, <code>version</code>, <code>repo</code>) about Redis drivers (clients). For example, details for the Rust driver (one being used in this sample code!) is captured in form of a <a href="https://doc.rust-lang.org/std/collections/struct.BTreeMap.html">BTreeMap</a> and then passed on to the low-level API. It is then retrieved using <a href="https://redis.io/commands/hgetall">HGETALL</a>.</p>
+<p><code>HSET</code> can also be executed using a high-level API using <a href="https://docs.rs/redis/0.19.0/redis/trait.Commands.html#method.hset_multiple">hset_multiple</a> that accepts an array of tuples. <a href="https://docs.rs/redis/0.19.0/redis/trait.Commands.html#method.hget">hget</a> is then executed to fetch the value for a single attribute (the <code>repo</code> in this case).</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#719e07">fn</span> <span style="color:#268bd2">hash</span>() {
+    <span style="color:#268bd2">let</span> <span style="color:#719e07">mut</span> conn <span style="color:#719e07">=</span> connect();
+
+    <span style="color:#268bd2">let</span> <span style="color:#719e07">mut</span> driver: <span style="color:#268bd2">BTreeMap</span><span style="color:#719e07">&lt;</span><span style="color:#b58900">String</span>, <span style="color:#b58900">String</span><span style="color:#719e07">&gt;</span> <span style="color:#719e07">=</span> BTreeMap::new();
+    <span style="color:#268bd2">let</span> prefix <span style="color:#719e07">=</span> <span style="color:#2aa198">&#34;redis-driver&#34;</span>;
+    driver.insert(<span style="color:#b58900">String</span>::from(<span style="color:#2aa198">&#34;name&#34;</span>), <span style="color:#b58900">String</span>::from(<span style="color:#2aa198">&#34;redis-rs&#34;</span>));
+    driver.insert(<span style="color:#b58900">String</span>::from(<span style="color:#2aa198">&#34;version&#34;</span>), <span style="color:#b58900">String</span>::from(<span style="color:#2aa198">&#34;0.19.0&#34;</span>));
+    driver.insert(
+        <span style="color:#b58900">String</span>::from(<span style="color:#2aa198">&#34;repo&#34;</span>),
+        <span style="color:#b58900">String</span>::from(<span style="color:#2aa198">&#34;https://github.com/mitsuhiko/redis-rs&#34;</span>),
+    );
+
+    <span style="color:#268bd2">let</span> _: () <span style="color:#719e07">=</span> redis::cmd(<span style="color:#2aa198">&#34;HSET&#34;</span>)
+        .arg(format<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;{}:{}&#34;</span>, prefix, <span style="color:#2aa198">&#34;rust&#34;</span>))
+        .arg(driver)
+        .query(<span style="color:#719e07">&amp;</span><span style="color:#719e07">mut</span> conn)
+        .expect(<span style="color:#2aa198">&#34;failed to execute HSET&#34;</span>);
+
+    <span style="color:#268bd2">let</span> info: <span style="color:#268bd2">BTreeMap</span><span style="color:#719e07">&lt;</span><span style="color:#b58900">String</span>, <span style="color:#b58900">String</span><span style="color:#719e07">&gt;</span> <span style="color:#719e07">=</span> redis::cmd(<span style="color:#2aa198">&#34;HGETALL&#34;</span>)
+        .arg(format<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;{}:{}&#34;</span>, prefix, <span style="color:#2aa198">&#34;rust&#34;</span>))
+        .query(<span style="color:#719e07">&amp;</span><span style="color:#719e07">mut</span> conn)
+        .expect(<span style="color:#2aa198">&#34;failed to execute HGETALL&#34;</span>);
+    println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;info for rust redis driver: {:?}&#34;</span>, info);
+
+    <span style="color:#268bd2">let</span> _: () <span style="color:#719e07">=</span> conn
+        .hset_multiple(
+            format<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;{}:{}&#34;</span>, prefix, <span style="color:#2aa198">&#34;go&#34;</span>),
+            <span style="color:#719e07">&amp;</span>[
+                (<span style="color:#2aa198">&#34;name&#34;</span>, <span style="color:#2aa198">&#34;go-redis&#34;</span>),
+                (<span style="color:#2aa198">&#34;version&#34;</span>, <span style="color:#2aa198">&#34;8.4.6&#34;</span>),
+                (<span style="color:#2aa198">&#34;repo&#34;</span>, <span style="color:#2aa198">&#34;https://github.com/go-redis/redis&#34;</span>),
+            ],
+        )
+        .expect(<span style="color:#2aa198">&#34;failed to execute HSET&#34;</span>);
+
+    <span style="color:#268bd2">let</span> repo_name: <span style="color:#b58900">String</span> <span style="color:#719e07">=</span> conn
+        .hget(format<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;{}:{}&#34;</span>, prefix, <span style="color:#2aa198">&#34;go&#34;</span>), <span style="color:#2aa198">&#34;repo&#34;</span>)
+        .expect(<span style="color:#2aa198">&#34;HGET failed&#34;</span>);
+    println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;go redis driver repo name: {:?}&#34;</span>, repo_name);
+}
+</code></pre></div><h3 id="using-redis-lists">Using Redis Lists</h3>
+<p>In the function below, you can see how to use a <code>LIST</code> data structure. <a href="https://redis.io/commands/lpush">LPUSH</a> is executed (with the low-level API) to add an entry to the list and the high-level <a href="https://docs.rs/redis/0.19.0/redis/trait.Commands.html#method.lpop">lpop</a> method is used to retrieve that from the list. Then, the <a href="https://docs.rs/redis/0.19.0/redis/trait.Commands.html#method.rpush">rpush</a> method is used to add a couple of entries to the list which are then fetched using the low-level <a href="https://docs.rs/redis/0.19.0/redis/trait.Commands.html#method.lrange">lrange</a> method.</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#719e07">fn</span> <span style="color:#268bd2">list</span>() {
+    <span style="color:#268bd2">let</span> <span style="color:#719e07">mut</span> conn <span style="color:#719e07">=</span> connect();
+    <span style="color:#268bd2">let</span> list_name <span style="color:#719e07">=</span> <span style="color:#2aa198">&#34;items&#34;</span>;
+
+    <span style="color:#268bd2">let</span> _: () <span style="color:#719e07">=</span> redis::cmd(<span style="color:#2aa198">&#34;LPUSH&#34;</span>)
+        .arg(list_name)
+        .arg(<span style="color:#2aa198">&#34;item-1&#34;</span>)
+        .query(<span style="color:#719e07">&amp;</span><span style="color:#719e07">mut</span> conn)
+        .expect(<span style="color:#2aa198">&#34;failed to execute LPUSH for &#39;items&#39;&#34;</span>);
+
+    <span style="color:#268bd2">let</span> item: <span style="color:#b58900">String</span> <span style="color:#719e07">=</span> conn
+        .lpop(list_name)
+        .expect(<span style="color:#2aa198">&#34;failed to execute LPOP for &#39;items&#39;&#34;</span>);
+    println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;first item: {}&#34;</span>, item);
+
+    <span style="color:#268bd2">let</span> _: () <span style="color:#719e07">=</span> conn.rpush(list_name, <span style="color:#2aa198">&#34;item-2&#34;</span>).expect(<span style="color:#2aa198">&#34;RPUSH failed&#34;</span>);
+    <span style="color:#268bd2">let</span> _: () <span style="color:#719e07">=</span> conn.rpush(list_name, <span style="color:#2aa198">&#34;item-3&#34;</span>).expect(<span style="color:#2aa198">&#34;RPUSH failed&#34;</span>);
+
+    <span style="color:#268bd2">let</span> len: <span style="color:#dc322f">isize</span> <span style="color:#719e07">=</span> conn
+        .llen(list_name)
+        .expect(<span style="color:#2aa198">&#34;failed to execute LLEN for &#39;items&#39;&#34;</span>);
+    println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;no. of items in list = {}&#34;</span>, len);
+
+    <span style="color:#268bd2">let</span> items: <span style="color:#b58900">Vec</span><span style="color:#719e07">&lt;</span><span style="color:#b58900">String</span><span style="color:#719e07">&gt;</span> <span style="color:#719e07">=</span> conn
+        .lrange(list_name, <span style="color:#2aa198">0</span>, len <span style="color:#719e07">-</span> <span style="color:#2aa198">1</span>)
+        .expect(<span style="color:#2aa198">&#34;failed to execute LRANGE for &#39;items&#39;&#34;</span>);
+
+    println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;listing items in list&#34;</span>);
+    <span style="color:#719e07">for</span> item <span style="color:#719e07">in</span> items {
+        println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;item: {}&#34;</span>, item)
+    }
+}
+</code></pre></div><h3 id="store-unique-items-in-a-redis-set">Store unique items in a Redis Set</h3>
+<p>Here you can see some of the <code>SET</code> operations. The <a href="https://docs.rs/redis/0.19.0/redis/trait.Commands.html#method.sadd">sadd</a> (high-level API) method is used to add couple of entries to a <code>SET</code> named <code>users</code>. <a href="https://redis.io/commands/hset">SISMEMBER</a> is then executed (low-level API) to check whether <code>user1</code> exists. Finally, <a href="https://docs.rs/redis/0.19.0/redis/trait.Commands.html#method.smembers">smembers</a> is used to fetch and iterate over all the set entries in the form of a Vector (<a href="https://doc.rust-lang.org/std/vec/struct.Vec.html">Vec<!-- raw HTML omitted --></a>).</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#719e07">fn</span> <span style="color:#268bd2">set</span>() {
+    <span style="color:#268bd2">let</span> <span style="color:#719e07">mut</span> conn <span style="color:#719e07">=</span> connect();
+    <span style="color:#268bd2">let</span> set_name <span style="color:#719e07">=</span> <span style="color:#2aa198">&#34;users&#34;</span>;
+
+    <span style="color:#268bd2">let</span> _: () <span style="color:#719e07">=</span> conn
+        .sadd(set_name, <span style="color:#2aa198">&#34;user1&#34;</span>)
+        .expect(<span style="color:#2aa198">&#34;failed to execute SADD for &#39;users&#39;&#34;</span>);
+    <span style="color:#268bd2">let</span> _: () <span style="color:#719e07">=</span> conn
+        .sadd(set_name, <span style="color:#2aa198">&#34;user2&#34;</span>)
+        .expect(<span style="color:#2aa198">&#34;failed to execute SADD for &#39;users&#39;&#34;</span>);
+
+    <span style="color:#268bd2">let</span> ismember: <span style="color:#dc322f">bool</span> <span style="color:#719e07">=</span> redis::cmd(<span style="color:#2aa198">&#34;SISMEMBER&#34;</span>)
+        .arg(set_name)
+        .arg(<span style="color:#2aa198">&#34;user1&#34;</span>)
+        .query(<span style="color:#719e07">&amp;</span><span style="color:#719e07">mut</span> conn)
+        .expect(<span style="color:#2aa198">&#34;failed to execute SISMEMBER for &#39;users&#39;&#34;</span>);
+    println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;does user1 exist in the set? {}&#34;</span>, ismember);
+
+    <span style="color:#268bd2">let</span> users: <span style="color:#b58900">Vec</span><span style="color:#719e07">&lt;</span><span style="color:#b58900">String</span><span style="color:#719e07">&gt;</span> <span style="color:#719e07">=</span> conn.smembers(set_name).expect(<span style="color:#2aa198">&#34;failed to execute SMEMBERS&#34;</span>);
+    println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;listing users in set&#34;</span>);
+
+    <span style="color:#719e07">for</span> user <span style="color:#719e07">in</span> users {
+        println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;user: {}&#34;</span>, user)
+    }
+}
+</code></pre></div><h3 id="take-advantage-of-redis-sorted-sets">Take advantage of Redis Sorted Sets</h3>
+<p><code>sorted_set</code> function below demonstrates the Sorted Set data structure. <a href="https://redis.io/commands/zadd">ZADD</a> is invoked (with the low-level API) to add a random integer score for a player (<code>player-1</code>). Next, the <a href="https://docs.rs/redis/0.19.0/redis/trait.Commands.html#method.zadd">zadd</a> method (high-level API) is used to add more players (<code>player-2</code> to <code>player-5</code>) and their respective (randomly generated) scores. The number of entries in the sorted set is figured out using <a href="https://redis.io/commands/zcard">ZCARD</a> and that&rsquo;s used as the limit to the <a href="https://redis.io/commands/zrange">ZRANGE</a> command (invoked with the low-level API) to list out the players with their scores in ascending order.</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#719e07">fn</span> <span style="color:#268bd2">sorted_set</span>() {
+    <span style="color:#268bd2">let</span> <span style="color:#719e07">mut</span> conn <span style="color:#719e07">=</span> connect();
+    <span style="color:#268bd2">let</span> sorted_set <span style="color:#719e07">=</span> <span style="color:#2aa198">&#34;leaderboard&#34;</span>;
+
+    <span style="color:#268bd2">let</span> _: () <span style="color:#719e07">=</span> redis::cmd(<span style="color:#2aa198">&#34;ZADD&#34;</span>)
+        .arg(sorted_set)
+        .arg(rand::thread_rng().gen_range(<span style="color:#2aa198">1</span>..<span style="color:#2aa198">10</span>))
+        .arg(<span style="color:#2aa198">&#34;player-1&#34;</span>)
+        .query(<span style="color:#719e07">&amp;</span><span style="color:#719e07">mut</span> conn)
+        .expect(<span style="color:#2aa198">&#34;failed to execute ZADD for &#39;leaderboard&#39;&#34;</span>);
+
+    <span style="color:#719e07">for</span> num <span style="color:#719e07">in</span> <span style="color:#2aa198">2</span>..<span style="color:#719e07">=</span><span style="color:#2aa198">5</span> {
+        <span style="color:#268bd2">let</span> _: () <span style="color:#719e07">=</span> conn
+            .zadd(
+                sorted_set,
+                <span style="color:#b58900">String</span>::from(<span style="color:#2aa198">&#34;player-&#34;</span>) <span style="color:#719e07">+</span> <span style="color:#719e07">&amp;</span>num.to_string(),
+                rand::thread_rng().gen_range(<span style="color:#2aa198">1</span>..<span style="color:#2aa198">10</span>),
+            )
+            .expect(<span style="color:#2aa198">&#34;failed to execute ZADD for &#39;leaderboard&#39;&#34;</span>);
+    }
+
+    <span style="color:#268bd2">let</span> count: <span style="color:#dc322f">isize</span> <span style="color:#719e07">=</span> conn
+        .zcard(sorted_set)
+        .expect(<span style="color:#2aa198">&#34;failed to execute ZCARD for &#39;leaderboard&#39;&#34;</span>);
+
+    <span style="color:#268bd2">let</span> leaderboard: <span style="color:#b58900">Vec</span><span style="color:#719e07">&lt;</span>(<span style="color:#b58900">String</span>, <span style="color:#dc322f">isize</span>)<span style="color:#719e07">&gt;</span> <span style="color:#719e07">=</span> conn
+        .zrange_withscores(sorted_set, <span style="color:#2aa198">0</span>, count <span style="color:#719e07">-</span> <span style="color:#2aa198">1</span>)
+        .expect(<span style="color:#2aa198">&#34;ZRANGE failed&#34;</span>);
+
+    println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;listing players and scores in ascending order&#34;</span>);
+
+    <span style="color:#719e07">for</span> item <span style="color:#719e07">in</span> leaderboard {
+        println<span style="color:#719e07">!</span>(<span style="color:#2aa198">&#34;{} = {}&#34;</span>, item.<span style="color:#2aa198">0</span>, item.<span style="color:#2aa198">1</span>)
+    }
+}
+</code></pre></div><p>Now that you&rsquo;ve gone through the code, it&rsquo;s time to run the application and check the output.</p>
+<h2 id="run-the-sample-application">Run the sample application</h2>
+<p>Start by cloning the GitHub repo:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/abhirockzz/rust-redis-101.git
+<span style="color:#b58900">cd</span> rust-redis-101
+</code></pre></div><p>If you&rsquo;re using a local Redis server (e.g. with Docker) over an insecure connection without any password, simply use:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#b58900">export</span> <span style="color:#268bd2">REDIS_HOSTNAME</span><span style="color:#719e07">=</span>localhost:6379
+</code></pre></div><p>If you&rsquo;re using Azure Cache for Redis, <a href="https://docs.microsoft.com/azure/azure-cache-for-redis/cache-python-get-started?WT.mc_id=data-12975-abhishgu#retrieve-host-name-ports-and-access-keys-from-the-azure-portal">fetch the Host name and Access Keys</a> from the <a href="https://portal.azure.com/">Azure portal</a>. Set the respective environment variables:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#b58900">export</span> <span style="color:#268bd2">REDIS_HOSTNAME</span><span style="color:#719e07">=</span>&lt;Host name&gt;:&lt;port&gt; <span style="color:#719e07">(</span>e.g. &lt;name of cache&gt;.redis.cache.windows.net:6380<span style="color:#719e07">)</span>
+<span style="color:#b58900">export</span> <span style="color:#268bd2">REDIS_PASSWORD</span><span style="color:#719e07">=</span>&lt;Primary Access Key&gt;
+<span style="color:#b58900">export</span> <span style="color:#268bd2">IS_TLS</span><span style="color:#719e07">=</span><span style="color:#b58900">true</span>
+</code></pre></div><p>To run the application:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cargo run
+</code></pre></div><p>You will see an output as such:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">******* Running SET, GET, INCR commands *******
+value <span style="color:#719e07">for</span> <span style="color:#2aa198">&#39;foo&#39;</span> <span style="color:#719e07">=</span> bar
+<span style="color:#268bd2">counter</span> <span style="color:#719e07">=</span> <span style="color:#2aa198">29</span>
+******* Running HASH commands *******
+info <span style="color:#719e07">for</span> rust redis driver: <span style="color:#719e07">{</span><span style="color:#2aa198">&#34;name&#34;</span>: <span style="color:#2aa198">&#34;redis-rs&#34;</span>, <span style="color:#2aa198">&#34;repo&#34;</span>: <span style="color:#2aa198">&#34;https://github.com/mitsuhiko/redis-rs&#34;</span>, <span style="color:#2aa198">&#34;version&#34;</span>: <span style="color:#2aa198">&#34;0.19.0&#34;</span><span style="color:#719e07">}</span>
+go redis driver repo name: <span style="color:#2aa198">&#34;https://github.com/go-redis/redis&#34;</span>
+******* Running LIST commands *******
+first item: item-1
+no. of items in <span style="color:#268bd2">list</span> <span style="color:#719e07">=</span> <span style="color:#2aa198">2</span>
+listing items in list
+item: item-2
+item: item-3
+******* Running SET commands *******
+does user1 exist in the set? <span style="color:#b58900">true</span>
+listing users in <span style="color:#b58900">set</span>
+user: user2
+user: user1
+user: user3
+******* Running SORTED SET commands *******
+listing players and scores
+player-4 <span style="color:#719e07">=</span> <span style="color:#2aa198">3</span>
+player-3 <span style="color:#719e07">=</span> <span style="color:#2aa198">7</span>
+player-1 <span style="color:#719e07">=</span> <span style="color:#2aa198">8</span>
+player-2 <span style="color:#719e07">=</span> <span style="color:#2aa198">8</span>
+player-5 <span style="color:#719e07">=</span> <span style="color:#2aa198">8</span>
+</code></pre></div><blockquote>
+<p>Important: If you were using Azure Cache for Redis, please ensure that you delete the Redis instance.</p>
+</blockquote>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this tutorial, you learned how to use the Rust driver for Redis to connect and execute operations in Azure Cache for Redis. If you found this helpful, you may want to explore these additional resources:</p>
+<ul>
+<li><a href="https://redis.io/topics/data-types-intro">An introduction to Redis data types and abstractions</a></li>
+<li>Read <a href="https://doc.rust-lang.org/book/index.html">The Rust Book</a></li>
+<li><a href="https://github.com/rust-lang/rustlings">Try small exercises to get you used to reading and writing Rust code</a></li>
+<li><a href="https://docs.microsoft.com/azure/architecture/best-practices/caching?toc=%2fazure%2fredis-cache%2ftoc.json&amp;WT.mc_id=data-12975-abhishgu">Considerations for designing and using a cache</a></li>
+<li><a href="https://docs.microsoft.com/azure/azure-cache-for-redis/cache-best-practices?WT.mc_id=data-12975-abhishgu">Best practices for Azure Cache for Redis</a></li>
+<li><a href="https://docs.microsoft.com/azure/azure-cache-for-redis/cache-high-availability?WT.mc_id=data-12975-abhishgu">High availability for Azure Cache for Redis</a></li>
+</ul>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+					<nav class="nav tags">
+							<ul class="flat">
+								
+								<li><a href="/abhirockzz.github.io/tags/rust">Rust</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/redis">Redis</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/azure">Azure</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/nosql">NoSQL</a></li>
+								
+							</ul>
+					</nav>
+				
+			
+		</div>
+		</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> © Copyright notice |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54762029-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

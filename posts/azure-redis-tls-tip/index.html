@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Tip: Using the latest TLS version with Azure Cache for Redis - Abhishek&#39;s blog (work in progress)</title><link rel="icon" type="image/png" href=icons/myicon.png /><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Tip: Using the latest TLS version with Azure Cache for Redis" />
+<meta property="og:description" content="fill in" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="abhirockzz.github.io/posts/azure-redis-tls-tip/" />
+<meta property="article:published_time" content="2020-06-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-06-01T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Tip: Using the latest TLS version with Azure Cache for Redis"/>
+<meta name="twitter:description" content="fill in"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/main.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/dark.css" media="(prefers-color-scheme: dark)" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom-dark.css" media="(prefers-color-scheme: dark)" />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="abhirockzz.github.iojs/main.js"></script>
+	<script src="abhirockzz.github.iojs/abc.js"></script>
+	<script src="abhirockzz.github.iojs/xyz.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="abhirockzz.github.io">
+	<h1 class="site-title"><a href="abhirockzz.github.io">Abhishek&#39;s blog (work in progress)</a></h1>
+	<div class="site-description"><h2>Mostly about Kafka, Databases, Kubernetes and other open source stuff</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/abhirockzz/" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/abhi_tweeter" title="Twitter"><i data-feather="twitter"></i></a><a href="https://www.linkedin.com/in/abhirockzz/" title="LinkedIn"><i data-feather="linkedin"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="abhirockzz.github.io/">Home</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/about">About</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/books">Books</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Tip: Using the latest TLS version with Azure Cache for Redis</h1>
+			<div class="meta">Posted at &mdash; Jun 1, 2020</div>
+		</div>
+
+		<div class="markdown">
+			<p><a href="https://docs.microsoft.com/azure/azure-cache-for-redis/cache-overview?WT.mc_id=devto-blog-abhishgu">Azure Cache for Redis</a> provides an in-memory data store based on the open-source software Redis.</p>
+<p>As a part of the industry-wide push toward the exclusive use of Transport Layer Security (<code>TLS</code>) version <code>1.2</code> or later, Azure Cache for Redis will not support <code>TLS</code> versions 1.0 and 1.1 i.e. your application will be required to use <code>TLS</code> 1.2 or later to communicate with your cache</p>
+<blockquote>
+<p>To read the details, <a href="https://docs.microsoft.com/azure/azure-cache-for-redis/cache-remove-tls-10-11?WT.mc_id=devto-blog-abhishgu">please refer to this page from the product documentation</a></p>
+</blockquote>
+<p>It might be helpful to know how will this might manifest in your Go apps (I am using <a href="https://github.com/go-redis/redis"><code>go-redis</code> client</a> as an example)</p>
+<h3 id="if-you-dont-specify-tls-at-all">If you don&rsquo;t specify <code>TLS</code> at all</h3>
+<p>e.g.</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">c <span style="color:#719e07">:=</span> redis.<span style="color:#268bd2">NewClient</span>(<span style="color:#719e07">&amp;</span>redis.Options{Addr: endpoint, Password: password})
+err <span style="color:#719e07">:=</span> c.<span style="color:#268bd2">Ping</span>().<span style="color:#268bd2">Err</span>()
+    <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+        log.<span style="color:#268bd2">Fatal</span>(err)
+    }
+<span style="color:#719e07">defer</span> c.<span style="color:#268bd2">Close</span>()
+</code></pre></div><p>.. you will encounter this error <code>i/o timeout</code> (probably not that helpful)</p>
+<h3 id="if-the-specified-tls-version-is-less-than-12">If the specified <code>TLS</code> version is less than <code>1.2</code></h3>
+<p>e.g.</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">tlsConfig <span style="color:#719e07">:=</span> <span style="color:#719e07">&amp;</span>tls.Config{MaxVersion: tls.VersionTLS11, MinVersion: tls.VersionTLS10}
+c <span style="color:#719e07">:=</span> redis.<span style="color:#268bd2">NewClient</span>(<span style="color:#719e07">&amp;</span>redis.Options{Addr: endpoint, Password: password, TLSConfig: tlsConfig})
+
+err <span style="color:#719e07">:=</span> c.<span style="color:#268bd2">Ping</span>().<span style="color:#268bd2">Err</span>()
+ <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+    log.<span style="color:#268bd2">Fatal</span>(err)
+ }
+
+<span style="color:#719e07">defer</span> c.<span style="color:#268bd2">Close</span>()
+</code></pre></div><p>..you will end up an <code>tls: DialWithDialer timed out</code> error (again, not that obvious)</p>
+<h3 id="the-solution-is-obvious-though">The solution is obvious though</h3>
+<p>If you don&rsquo;t set <code>MaxVersion</code> or <code>MinVersion</code> i.e. use <code>tlsConfig := &amp;tls.Config{}</code> it will work since <code>MaxVersion</code> defaulta to <code>TLS1.3</code> (see <a href="https://golang.org/pkg/crypto/tls/#Config">https://golang.org/pkg/crypto/tls/#Config</a>)</p>
+<p>For sake of clarity, it&rsquo;s better to be explicit i.e.</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">tlsConfig <span style="color:#719e07">:=</span> <span style="color:#719e07">&amp;</span>tls.Config{MinVersion: tls.VersionTLS12}
+</code></pre></div><p>I hope this proves helpful if you stumble across any issues while connecting to Azure Cache for Redis with Go</p>
+<p>Cheers!</p>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+					<nav class="nav tags">
+							<ul class="flat">
+								
+								<li><a href="/abhirockzz.github.io/tags/azure">azure</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/redis">redis</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/security">security</a></li>
+								
+							</ul>
+					</nav>
+				
+			
+		</div>
+		</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> © Copyright notice |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54762029-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

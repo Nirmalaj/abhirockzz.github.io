@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>How to use Azure Go SDK to manage Azure Data Explorer clusters - Abhishek&#39;s blog (work in progress)</title><link rel="icon" type="image/png" href=icons/myicon.png /><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="How to use Azure Go SDK to manage Azure Data Explorer clusters" />
+<meta property="og:description" content="A simple CLI application to demonstrate how to use the Go SDK" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="abhirockzz.github.io/posts/golang-azure-data-explorer-manage/" />
+<meta property="article:published_time" content="2020-07-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-07-30T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to use Azure Go SDK to manage Azure Data Explorer clusters"/>
+<meta name="twitter:description" content="A simple CLI application to demonstrate how to use the Go SDK"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/main.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/dark.css" media="(prefers-color-scheme: dark)" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom-dark.css" media="(prefers-color-scheme: dark)" />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="abhirockzz.github.iojs/main.js"></script>
+	<script src="abhirockzz.github.iojs/abc.js"></script>
+	<script src="abhirockzz.github.iojs/xyz.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="abhirockzz.github.io">
+	<h1 class="site-title"><a href="abhirockzz.github.io">Abhishek&#39;s blog (work in progress)</a></h1>
+	<div class="site-description"><h2>Mostly about Kafka, Databases, Kubernetes and other open source stuff</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/abhirockzz/" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/abhi_tweeter" title="Twitter"><i data-feather="twitter"></i></a><a href="https://www.linkedin.com/in/abhirockzz/" title="LinkedIn"><i data-feather="linkedin"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="abhirockzz.github.io/">Home</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/about">About</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/books">Books</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">How to use Azure Go SDK to manage Azure Data Explorer clusters</h1>
+			<div class="meta">Posted at &mdash; Jul 30, 2020</div>
+		</div>
+
+		<div class="markdown">
+			<p><a href="posts/golang-azure-data-explorer-getting-started">Getting started with Azure Data Explorer using the Go SDK</a> covered how to use the <a href="https://github.com/Azure/azure-kusto-go">Azure Data Explorer Go SDK</a> to ingest and query data from azure data explorer to ingest and query data. In this blog you will the <a href="https://docs.microsoft.com/azure/developer/go/?WT.mc_id=devto-blog-abhishgu">Azure Go SDK</a> to manage Azure Data Explorer clusters and databases.</p>
+<p><a href="https://docs.microsoft.com/azure/data-explorer/?WT.mc_id=devto-blog-abhishgu">Azure Data Explorer</a> (also known as <strong>Kusto</strong>) is a fast and scalable data exploration service for analyzing large volumes of diverse data from any data source, such as websites, applications, IoT devices, and more. This data can then be used for diagnostics, monitoring, reporting, machine learning, and additional analytics capabilities.</p>
+<p>In case you&rsquo;re wondering, we are talking about <a href="https://docs.microsoft.com/azure/data-explorer/kusto/api/golang/kusto-golang-client-library?WT.mc_id=devto-blog-abhishgu">two different SDKs here</a>. The one covered in this blog is for resource administration (also known as the control plane SDK) and the the one I used in the <a href="https://dev.to/azure/getting-started-with-azure-data-explorer-using-the-go-sdk-30jm">other post</a> is data plane SDK for interacting with the Azure Data Explorer service itself (ingestion, query etc.)</p>
+<p><strong>What&rsquo;s covered ?</strong></p>
+<p>A simple CLI application is used as an example to demonstrate how to use the Go SDK. We&rsquo;ll try out the application first and go through how to:</p>
+<ul>
+<li>Create and list Azure Data Explorer clusters</li>
+<li>Create and list databases in that cluster</li>
+<li>Delete the database and cluster</li>
+</ul>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ ./goadx --help
+CLI to test sample program for Azure Data Explorer
+
+Usage:
+  goadx [command]
+
+Available Commands:
+  cluster     create, list and delete Azure Data Explorer clusters
+  db          create, list and delete databases in an Azure Data Explorer cluster
+  help        Help about any command
+
+Flags:
+  -h, --help   help for goadx
+
+Use &#34;goadx [command] --help&#34; for more information about a command.
+</code></pre></div><p>Once that&rsquo;s done, we&rsquo;ll walk through the sample code to understand what&rsquo;s going on</p>
+<blockquote>
+<p>The code is available on GitHub <a href="https://github.com/abhirockzz/azure-go-sdk-for-dataexplorer">https://github.com/abhirockzz/azure-go-sdk-for-dataexplorer</a></p>
+</blockquote>
+<p>Please note that this CLI based example is just meant to showcase how to use the Azure Go SDK (in the context of Azure Data Explorer) as a part of a larger application. It is not supposed to replace/substitute the <a href="https://docs.microsoft.com/azure/data-explorer/create-cluster-database-cli?WT.mc_id=devto-blog-abhishgu">Azure CLI which can be used to manage Azure Data Explorer resources</a></p>
+<h2 id="pre-requisites">Pre-requisites</h2>
+<p><a href="https://golang.org/dl/">Install Go 1.13 or above</a></p>
+<p>You will need a <a href="https://docs.microsoft.com/azure/?WT.mc_id=devto-blog-abhishgu">Microsoft Azure account</a>. Go ahead and <a href="https://azure.microsoft.com/free/?WT.mc_id=devto-blog-abhishgu">sign up for a free one!</a></p>
+<p>Install the <a href="https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest&amp;WT.mc_id=devto-blog-abhishgu">Azure CLI</a> if you don&rsquo;t have it already (should be quick!)</p>
+<h2 id="run-the-cli-application">Run the CLI application</h2>
+<p>Get the code and build it:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/abhirockzz/azure-go-sdk-for-dataexplorer
+<span style="color:#b58900">cd</span> azure-go-sdk-for-dataexplorer
+go build -o goadx
+
+//to confirm
+chmod a+x goadx <span style="color:#719e07">&amp;&amp;</span> ./goadx
+</code></pre></div><p>To see the details for individual commands, e.g. for cluster creation:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx cluster create --help
+
+//output
+
+Creates <span style="color:#2aa198">1</span> instance of compute <span style="color:#b58900">type</span> DevNoSLAStandardD11V2 in Basic tier
+
+Usage:
+  goadx cluster create <span style="color:#719e07">[</span>flags<span style="color:#719e07">]</span>
+
+Flags:
+  -h, --help          <span style="color:#b58900">help</span> <span style="color:#719e07">for</span> create
+      --loc string    ADX cluster location
+      --name string   ADX cluster name
+
+Global Flags:
+      --rg string    Azure resource group
+      --sub string   Azure subscription
+</code></pre></div><h3 id="few-more-steps-before-creating-the-cluster">Few more steps before creating the cluster&hellip;</h3>
+<p><strong>Create a resource group &hellip;.</strong></p>
+<p>&hellip; using <a href="https://docs.microsoft.com/cli/azure/group?view=azure-cli-latest&amp;WT.mc_id=devto-blog-abhishgu#az-group-create">az group create</a> CLI command</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">az group create -l &lt;region&gt; -n &lt;name&gt;
+
+e.g. az group create -l southeastasia -n my-adx-rg
+</code></pre></div><p>We need a <a href="https://docs.microsoft.com/azure/active-directory/develop/app-objects-and-service-principals?WT.mc_id=devto-blog-abhishgu#service-principal-object">Service Principal</a> for the Go SDK to authenticate with Azure Data Explorer service to execute cluster and database operations.</p>
+<p><strong>Create a Service Principal&hellip;</strong></p>
+<p>&hellip;using <a href="https://docs.microsoft.com/cli/azure/ad/sp?view=azure-cli-latest&amp;WT.mc_id=devto-blog-abhishgu#az-ad-sp-create-for-rbac">az ad sp create-for-rbac</a></p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">az ad sp create-for-rbac -n &#34;test-datax-sp&#34;
+</code></pre></div><p>You will get a JSON response as such</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#268bd2">&#34;appId&#34;</span>: <span style="color:#2aa198">&#34;fe7280c7-5705-4789-b17f-71a472340429&#34;</span>,
+  <span style="color:#268bd2">&#34;displayName&#34;</span>: <span style="color:#2aa198">&#34;test-datax-sp&#34;</span>,
+  <span style="color:#268bd2">&#34;name&#34;</span>: <span style="color:#2aa198">&#34;http://test-datax-sp&#34;</span>,
+  <span style="color:#268bd2">&#34;password&#34;</span>: <span style="color:#2aa198">&#34;29c719dd-f2b3-46de-b71c-4004fb6116ee&#34;</span>,
+  <span style="color:#268bd2">&#34;tenant&#34;</span>: <span style="color:#2aa198">&#34;42f988bf-86f1-42af-91ab-2d7cd011db42&#34;</span>
+}
+</code></pre></div><p>Set the service principal details as environment variables. During the code walk-through, you will see why these specific variables are required</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#b58900">export</span> <span style="color:#268bd2">AZURE_CLIENT_ID</span><span style="color:#719e07">=</span><span style="color:#2aa198">&#34;&lt;appId&gt;&#34;</span>
+<span style="color:#b58900">export</span> <span style="color:#268bd2">AZURE_CLIENT_SECRET</span><span style="color:#719e07">=</span><span style="color:#2aa198">&#34;&lt;password&gt;&#34;</span>
+<span style="color:#b58900">export</span> <span style="color:#268bd2">AZURE_TENANT_ID</span><span style="color:#719e07">=</span><span style="color:#2aa198">&#34;&lt;tenant&gt;&#34;</span>
+</code></pre></div><p>You are all set!</p>
+<h3 id="create-an-azure-data-explorer-cluster">Create an Azure Data Explorer cluster</h3>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx cluster create --name &lt;name of the cluster you want to create&gt; --loc &lt;azure region <span style="color:#719e07">for</span> the cluster&gt; --rg &lt;name of the resource group&gt; --sub &lt;azure subscription id&gt;
+</code></pre></div><p>For example:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx cluster create --name MyAdxCluster --loc <span style="color:#2aa198">&#34;Southeast Asia&#34;</span> --rg my-adx-rg --sub 9a42a42f-ae42-4242-b6a7-eea0ea42d342
+</code></pre></div><p>This will create a single instance cluster with the <code>DevNoSLAStandardD11V2</code> VM</p>
+<blockquote>
+<p>this is hard coded for sake of simplicity/ease-of-use</p>
+</blockquote>
+<p>The cluster creation will take some time, and the code blocks for that time period. Please be patient ;) Grab some coffee, check Twitter or do whatever keeps you busy for about ~10-15 mins. Once the cluster is created, you will see this message:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">created cluster MyAdxCluster with ID /subscriptions/9a42a42f-ae42-4242-b6a7-eea0ea42d342/resourceGroups/my-adx-rg/providers/Microsoft.Kusto/Clusters/MyAdxCluster and type Microsoft.Kusto/Clusters
+</code></pre></div><h3 id="list-down-all-the-clusters">List down all the clusters</h3>
+<p>You just created a cluster, let&rsquo;s make sure you can get its info (including any other cluster you might already have in your resource group)</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx cluster list --rg &lt;name of the resource group&gt; --sub &lt;azure subscription id&gt;
+</code></pre></div><p>for example</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx cluster list --rg my-adx-rg --sub 9a42a42f-ae42-4242-b6a7-eea0ea42d342
+</code></pre></div><p>You will get a tabular output as such:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">+---------------+---------+----------------+-----------+-------------------------------------------------------+
+|     NAME      |  STATE  |    LOCATION    | INSTANCES |                          URI                          |
++---------------+---------+----------------+-----------+-------------------------------------------------------+
+| MyAdxCluster | Running | Southeast Asia |         <span style="color:#2aa198">1</span> | https://MyAdxCluster.southeastasia.kusto.windows.net |
++---------------+---------+----------------+-----------+-------------------------------------------------------+
+</code></pre></div><h3 id="you-have-the-cluster-its-time-to-create-a-database">You have the cluster, its time to create a database</h3>
+<p>To create a database in the cluster</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx db create --name &lt;name of the database you want to create&gt; --cluster &lt;nname of the adx cluster&gt; --loc &lt;azure region&gt; --rg &lt;resource group name&gt; --sub &lt;azure subcription id&gt;
+</code></pre></div><p>for example</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx db create --name testadxdb --cluster MyAdxCluster --loc <span style="color:#2aa198">&#34;Southeast Asia&#34;</span> --rg my-adx-rg --sub 9a42a42f-ae42-4242-b6a7-eea0ea42d342
+</code></pre></div><p>It shouldnt take a too long. Once the DB is created, you will see this message:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">created DB MyAdxCluster/testadxdb with ID /subscriptions/9a42a42f-ae42-4242-b6a7-eea0ea42d342/resourceGroups/my-adx-rg/providers/Microsoft.Kusto/Clusters/MyAdxCluster/Databases/testadxdb and type Microsoft.Kusto/Clusters/Databases
+</code></pre></div><h3 id="to-check-the-db-you-just-created-">To check the DB you just created &hellip;</h3>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx db list --cluster &lt;name of the adx cluster&gt; --rg &lt;resource group name&gt; --sub &lt;azure subscription id&gt;
+</code></pre></div><p>for example</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx db list --cluster MyAdxCluster --rg my-adx-rg --sub 9a42a42f-ae42-4242-b6a7-eea0ea42d342
+</code></pre></div><p>You will get a tabular output as such:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">+---------------------------+-----------+----------------+------------------------------------+
+|           NAME            |   STATE   |    LOCATION    |                TYPE                |
++---------------------------+-----------+----------------+------------------------------------+
+| MyAdxCluster/testadxdb     | Succeeded | Southeast Asia | Microsoft.Kusto/Clusters/Databases |
++---------------------------+-----------+----------------+------------------------------------+
+</code></pre></div><p>You can continue experimenting further and create more clusters and/or databases</p>
+<h3 id="time-to-clean-up-">Time to clean up &hellip;</h3>
+<p>You can delete the cluster directly as such:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx cluster delete --name &lt;name of adx cluster&gt; --rg &lt;resource group name&gt; --sub &lt;azure subcription id&gt;
+</code></pre></div><p>example:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx cluster delete --name MyAdxCluster --rg my-adx-rg --sub 9a42a42f-ae42-4242-b6a7-eea0ea42d342
+</code></pre></div><p>You should see a confirmation message indicating that the cluster has been deleted:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">deleted ADX cluster MyAdxCluster from resource group my-adx-rg
+</code></pre></div><p>Or you could just delete the database itself</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx db delete --name &lt;database name&gt; --cluster &lt;adx cluster name&gt; --rg &lt;resource group name&gt; --sub &lt;azure subscription id&gt;
+</code></pre></div><p>For example</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./goadx db delete --name testadxdb --cluster MyAdxCluster --rg my-adx-rg --sub 9a42a42f-ae42-4242-b6a7-eea0ea42d342
+</code></pre></div><p>You should see a confirmation message indicating that the database has been deleted:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">deleted DB testadxdb from cluster MyAdxCluster
+</code></pre></div><p>Alright, now that you what can be done, it&rsquo;s time to see how its done!</p>
+<h2 id="code-walk-through">Code walk through</h2>
+<p>At a high level, the application consists of two parts:</p>
+<ul>
+<li>Azure Data Explorer operations (create, read, delete) - part of the <a href="https://github.com/abhirockzz/azure-go-sdk-for-dataexplorer/tree/master/ops"><code>ops</code> package</a></li>
+<li>CLI commands - part of the <a href="https://github.com/abhirockzz/azure-go-sdk-for-dataexplorer/tree/master/cli"><code>cli</code> package</a></li>
+</ul>
+<p>To be honest, the CLI bit is not important (at-least in the context of the blog). It uses the (ubiquitous) <a href="https://github.com/spf13/cobra">Cobra</a> package to implement the cluster and cluster (top-level) commands and the sub-commands - <code>create</code>, <code>list</code> and <code>delete</code>. If you&rsquo;re interested, take a look at the following:</p>
+<ul>
+<li><a href="https://github.com/abhirockzz/azure-go-sdk-for-dataexplorer/blob/master/cli/root.go">root.go</a> - defines the root command for CLI entry point</li>
+<li><a href="https://github.com/abhirockzz/azure-go-sdk-for-dataexplorer/blob/master/cli/cluster.go">cluster.go</a> - defines and implements sub-commands for cluster operations</li>
+<li><a href="https://github.com/abhirockzz/azure-go-sdk-for-dataexplorer/blob/master/cli/db.go">db.go</a> - defines and implements sub-commands for database operations</li>
+</ul>
+<p>The CLI part simply invokes CRUD oeprations on Azure Data Explorer resources which is the important part. So, lets go through them</p>
+<h3 id="authentication">Authentication</h3>
+<p>This is handled in <a href="https://github.com/abhirockzz/azure-go-sdk-for-dataexplorer/blob/master/ops/client.go">ops/client.go</a>. To get a handle for the client components to execute the required operations, we need to authenticate. For e.g. to get the <a href="https://godoc.org/github.com/Azure/azure-sdk-for-go/services/kusto/mgmt/2020-02-15/kusto#ClustersClient"><code>kusto.ClustersClient</code></a>:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">func</span> <span style="color:#268bd2">getClustersClient</span>(subscription <span style="color:#dc322f">string</span>) kusto.ClustersClient {
+    client <span style="color:#719e07">:=</span> kusto.<span style="color:#268bd2">NewClustersClient</span>(subscription)
+    authR, err <span style="color:#719e07">:=</span> auth.<span style="color:#268bd2">NewAuthorizerFromEnvironment</span>()
+    <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+        log.<span style="color:#268bd2">Fatal</span>(err)
+    }
+    client.Authorizer = authR
+
+    <span style="color:#719e07">return</span> client
+}
+</code></pre></div><p>The part to note is the <a href="https://godoc.org/github.com/Azure/go-autorest/autorest/azure/auth#NewAuthorizerFromEnvironment">auth.NewAuthorizerFromEnvironment()</a> which looks for a set of pre-defined environment variables - this is <a href="https://docs.microsoft.com/en-us/azure/developer/go/azure-sdk-authorization#use-environment-based-authentication">User environment-based authentication</a></p>
+<h3 id="cluster-operations">Cluster operations</h3>
+<p><a href="https://github.com/abhirockzz/azure-go-sdk-for-dataexplorer/blob/master/ops/cluster.go">ops/cluster.go</a> is where the cluster create, list and delete is handled. Here is the snippet for create:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">func</span> <span style="color:#268bd2">CreateCluster</span>(sub, clusterName, location, rgName <span style="color:#dc322f">string</span>) {
+    <span style="color:#719e07">...</span>
+    result, err <span style="color:#719e07">:=</span> client.<span style="color:#268bd2">CreateOrUpdate</span>(ctx, rgName, clusterName, kusto.Cluster{Location: <span style="color:#719e07">&amp;</span>location, Sku: <span style="color:#719e07">&amp;</span>kusto.AzureSku{Name: kusto.DevNoSLAStandardD11V2, Capacity: <span style="color:#719e07">&amp;</span>numInstances, Tier: kusto.Basic}})
+    err = result.<span style="color:#268bd2">WaitForCompletionRef</span>(context.<span style="color:#268bd2">Background</span>(), client.Client)
+    r, err <span style="color:#719e07">:=</span> result.<span style="color:#268bd2">Result</span>(client)
+    <span style="color:#719e07">...</span>
+}
+</code></pre></div><p><a href="https://godoc.org/github.com/Azure/azure-sdk-for-go/services/kusto/mgmt/2020-02-15/kusto#ClustersClient.CreateOrUpdate">CreateOrUpdate</a> is used to initiate the cluster creation. Since this is a long running op, it returns a <a href="https://godoc.org/github.com/Azure/azure-sdk-for-go/services/kusto/mgmt/2020-02-15/kusto#ClustersCreateOrUpdateFuture"><code>ClustersCreateOrUpdateFuture</code></a> which we them wait on (using <a href="https://godoc.org/github.com/Azure/go-autorest/autorest/azure#Future.WaitForCompletionRef"><code>WaitForCompletionRef</code></a>)</p>
+<blockquote>
+<p>Note that I have used <code>context.Background()</code>, you can use a different context e,g one with timeout or one which can be cancelled.</p>
+</blockquote>
+<p>Once that&rsquo;s one, we check the future for the <a href="https://godoc.org/github.com/Azure/azure-sdk-for-go/services/kusto/mgmt/2020-02-15/kusto#ClustersCreateOrUpdateFuture.Result"><code>Result</code></a></p>
+<p>Listing all the clusters in a resource group is quite simple and can be done using <a href="https://godoc.org/github.com/Azure/azure-sdk-for-go/services/kusto/mgmt/2020-02-15/kusto#ClustersClient.ListByResourceGroup"><code>ListByResourceGroup</code></a></p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">func</span> <span style="color:#268bd2">ListClusters</span>(sub, rgName <span style="color:#dc322f">string</span>) kusto.ClusterListResult {
+    ctx <span style="color:#719e07">:=</span> context.<span style="color:#268bd2">Background</span>()
+
+    result, err <span style="color:#719e07">:=</span> <span style="color:#268bd2">getClustersClient</span>(sub).<span style="color:#268bd2">ListByResourceGroup</span>(ctx, rgName)
+    <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+        log.<span style="color:#268bd2">Fatal</span>(err.<span style="color:#268bd2">Error</span>())
+    }
+    <span style="color:#719e07">return</span> result
+}
+</code></pre></div><p><code>Delete</code> is similar to <code>Create</code> in the sense that it is a long running operation as well. Its the same drill - initiate the deletion (<a href="https://godoc.org/github.com/Azure/azure-sdk-for-go/services/kusto/mgmt/2020-02-15/kusto#ClustersClient.Delete">using Delete</a>), wait for it to finish and then confirm the result</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">func</span> <span style="color:#268bd2">DeleteCluster</span>(sub, clusterName, rgName <span style="color:#dc322f">string</span>) {
+    <span style="color:#719e07">...</span>
+    result, err <span style="color:#719e07">:=</span> client.<span style="color:#268bd2">Delete</span>(ctx, rgName, clusterName)
+    err = result.<span style="color:#268bd2">WaitForCompletionRef</span>(context.<span style="color:#268bd2">Background</span>(), client.Client)
+    r, err <span style="color:#719e07">:=</span> result.<span style="color:#268bd2">Result</span>(client)
+    <span style="color:#719e07">...</span>
+}
+</code></pre></div><h3 id="database-operations">Database operations</h3>
+<p><a href="https://github.com/abhirockzz/azure-go-sdk-for-dataexplorer/blob/master/ops/db.go">ops/db.go</a> is where the database create, list and delete is handled. Here is the snippet for create:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">func</span> <span style="color:#268bd2">CreateDatabase</span>(sub, rgName, clusterName, location, dbName <span style="color:#dc322f">string</span>) {
+    <span style="color:#719e07">...</span>
+    future, err <span style="color:#719e07">:=</span> client.<span style="color:#268bd2">CreateOrUpdate</span>(ctx, rgName, clusterName, dbName, kusto.ReadWriteDatabase{Kind: kusto.KindReadWrite, Location: <span style="color:#719e07">&amp;</span>location})
+    err = future.<span style="color:#268bd2">WaitForCompletionRef</span>(context.<span style="color:#268bd2">Background</span>(), client.Client)
+
+    r, err <span style="color:#719e07">:=</span> future.<span style="color:#268bd2">Result</span>(client)
+    kdb, _ <span style="color:#719e07">:=</span> r.Value.<span style="color:#268bd2">AsReadWriteDatabase</span>()
+    <span style="color:#719e07">...</span>
+}
+</code></pre></div><p>Listing is straightforward and taken care of by <a href="https://godoc.org/github.com/Azure/azure-sdk-for-go/services/kusto/mgmt/2020-02-15/kusto#DatabasesClient.ListByCluster"><code>ListByCluster</code></a></p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">func</span> <span style="color:#268bd2">ListDBs</span>(sub, rgName, clusterName <span style="color:#dc322f">string</span>) kusto.DatabaseListResult {
+    ctx <span style="color:#719e07">:=</span> context.<span style="color:#268bd2">Background</span>()
+    result, err <span style="color:#719e07">:=</span> <span style="color:#268bd2">getDBClient</span>(sub).<span style="color:#268bd2">ListByCluster</span>(ctx, rgName, clusterName)
+    <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+        log.<span style="color:#268bd2">Fatal</span>(<span style="color:#2aa198">&#34;failed to get databases in cluster&#34;</span>, err)
+    }
+    <span style="color:#719e07">return</span> result
+}
+</code></pre></div><p>And finally, the deletion which is handled using <a href="https://godoc.org/github.com/Azure/azure-sdk-for-go/services/kusto/mgmt/2020-02-15/kusto#DatabasesClient.Delete"><code>Delete</code></a></p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">func</span> <span style="color:#268bd2">DeleteDB</span>(sub, rgName, clusterName, dbName <span style="color:#dc322f">string</span>) {
+    <span style="color:#719e07">...</span>
+    future, err <span style="color:#719e07">:=</span> <span style="color:#268bd2">getDBClient</span>(sub).<span style="color:#268bd2">Delete</span>(ctx, rgName, clusterName, dbName)
+    err = future.<span style="color:#268bd2">WaitForCompletionRef</span>(context.<span style="color:#268bd2">Background</span>(), client.Client)
+    r, err <span style="color:#719e07">:=</span> future.<span style="color:#268bd2">Result</span>(client)
+    <span style="color:#719e07">...</span>
+}
+</code></pre></div><p>That&rsquo;s it for the code walkthrough!</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Hopefully this was helpful in demonstrating how to use the Azure Go SDK to work with Azure Data Explorer resources. You can check the documentation for <a href="https://docs.microsoft.com/azure/data-explorer/create-cluster-database-python?WT.mc_id=devto-blog-abhishgu">Python</a>, <a href="https://docs.microsoft.com/azure/data-explorer/create-cluster-database-csharp?WT.mc_id=devto-blog-abhishgu">.NET</a> and other examples. Happy exploring!</p>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+					<nav class="nav tags">
+							<ul class="flat">
+								
+								<li><a href="/abhirockzz.github.io/tags/golang">golang</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/azure-data-explorer">azure data explorer</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/big-data">big data</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/nosql">nosql</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/azure">azure</a></li>
+								
+							</ul>
+					</nav>
+				
+			
+		</div>
+		</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> © Copyright notice |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54762029-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

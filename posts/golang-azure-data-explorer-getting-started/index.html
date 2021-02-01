@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Tutorial: Getting started with Azure Data Explorer using the Go SDK - Abhishek&#39;s blog (work in progress)</title><link rel="icon" type="image/png" href=icons/myicon.png /><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Tutorial: Getting started with Azure Data Explorer using the Go SDK" />
+<meta property="og:description" content="How to use the Azure Data explorer Go SDK to ingest data from a Azure Blob storage container and query it programmatically" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="abhirockzz.github.io/posts/golang-azure-data-explorer-getting-started/" />
+<meta property="article:published_time" content="2020-07-22T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-07-22T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Tutorial: Getting started with Azure Data Explorer using the Go SDK"/>
+<meta name="twitter:description" content="How to use the Azure Data explorer Go SDK to ingest data from a Azure Blob storage container and query it programmatically"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/main.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/dark.css" media="(prefers-color-scheme: dark)" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom-dark.css" media="(prefers-color-scheme: dark)" />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="abhirockzz.github.iojs/main.js"></script>
+	<script src="abhirockzz.github.iojs/abc.js"></script>
+	<script src="abhirockzz.github.iojs/xyz.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="abhirockzz.github.io">
+	<h1 class="site-title"><a href="abhirockzz.github.io">Abhishek&#39;s blog (work in progress)</a></h1>
+	<div class="site-description"><h2>Mostly about Kafka, Databases, Kubernetes and other open source stuff</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/abhirockzz/" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/abhi_tweeter" title="Twitter"><i data-feather="twitter"></i></a><a href="https://www.linkedin.com/in/abhirockzz/" title="LinkedIn"><i data-feather="linkedin"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="abhirockzz.github.io/">Home</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/about">About</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/books">Books</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Tutorial: Getting started with Azure Data Explorer using the Go SDK</h1>
+			<div class="meta">Posted at &mdash; Jul 22, 2020</div>
+		</div>
+
+		<div class="markdown">
+			<p>With the help of an example, this blog post will walk you through how to use the <a href="https://docs.microsoft.com/azure/data-explorer/kusto/api/golang/kusto-golang-client-library?WT.mc_id=devto-blog-abhishgu">Azure Data explorer Go SDK</a> to ingest data from a <a href="https://docs.microsoft.com/azure/storage/blobs/storage-blobs-introduction?WT.mc_id=devto-blog-abhishgu">Azure Blob storage</a> container and query it programmatically using the SDK. After a quick overview of how to setup Azure Data Explorer cluster (and a database), we will explore the code to understand what&rsquo;s going on (and how) and finally test the application using a simple CLI interface</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/zn5ld22657d2ytiofcet.jpg" alt=""></p>
+<p>The sample data is a CSV file that can be <a href="https://kustosamplefiles.blob.core.windows.net/samplefiles/StormEvents.csv?st=2018-08-31T22%3A02%3A25Z&amp;se=2020-09-01T22%3A02%3A00Z&amp;sp=r&amp;sv=2018-03-28&amp;sr=b&amp;sig=LQIbomcKI8Ooz425hWtjeq6d61uEaq21UVX7YrM61N4%3D%22">downloaded from here</a></p>
+<blockquote>
+<p>The code is available on GitHub <a href="https://github.com/abhirockzz/azure-dataexplorer-go">https://github.com/abhirockzz/azure-dataexplorer-go</a></p>
+</blockquote>
+<h2 id="what-is-azure-data-explorer-">What is Azure Data Explorer ?</h2>
+<p><a href="https://docs.microsoft.com/azure/data-explorer/?WT.mc_id=devto-blog-abhishgu">Azure Data Explorer</a> (also known as <strong>Kusto</strong>) is a fast and scalable data exploration service for analyzing large volumes of diverse data from any data source, such as websites, applications, IoT devices, and more. This data can then be used for diagnostics, monitoring, reporting, machine learning, and additional analytics capabilities.</p>
+<p>It supports <a href="https://docs.microsoft.com/azure/data-explorer/ingest-data-overview?WT.mc_id=devto-blog-abhishgu">several ingestion methods</a>, including connectors to common services like <a href="https://docs.microsoft.com/azure/data-explorer/ingest-data-event-hub?WT.mc_id=devto-blog-abhishgu">Event Hub</a>, programmatic ingestion using SDKs, such as <a href="https://docs.microsoft.com/azure/data-explorer/net-sdk-ingest-data?WT.mc_id=devto-blog-abhishgu">.NET</a> and <a href="https://docs.microsoft.com/azure/data-explorer/python-ingest-data?WT.mc_id=devto-blog-abhishgu">Python</a>, and direct access to the engine for exploration purposes. It also integrates with analytics and modeling services for additional analysis and visualization of data using tools such as <a href="https://docs.microsoft.com/azure/data-explorer/power-bi-best-practices?WT.mc_id=devto-blog-abhishgu">Power BI</a></p>
+<p><img src="https://docs.microsoft.com/en-us/azure/data-explorer/media/data-explorer-overview/workflow.png" alt=""></p>
+<h3 id="go-sdk-for-azure-data-explorer">Go SDK for Azure Data Explorer</h3>
+<p><a href="https://github.com/Azure/azure-kusto-go">The Go client SDK</a> allows you to query, control and ingest into Azure Data Explorer clusters using <a href="https://golang.org/">Go</a>. Please note that this is for interacting with the Azure Data Explorer cluster (and related components such as tables etc.). To create Azure Data Explorer clusters, databases etc. you should the use the <a href="https://github.com/Azure/azure-sdk-for-go/tree/master/services/kusto/mgmt">admin component (control plane) SDK</a> which is a part of the larger <a href="https://docs.microsoft.com/azure/developer/go/?WT.mc_id=devto-blog-abhishgu">Azure SDK for Go</a></p>
+<blockquote>
+<p>API docs - <a href="https://godoc.org/github.com/Azure/azure-kusto-go">https://godoc.org/github.com/Azure/azure-kusto-go</a></p>
+</blockquote>
+<p>Before getting started, here is what you would need to try out the sample application</p>
+<h2 id="pre-requisites">Pre-requisites</h2>
+<p><a href="https://golang.org/dl/">Install Go 1.13 or above</a></p>
+<p>You will need a <a href="https://docs.microsoft.com/azure/?WT.mc_id=devto-blog-abhishgu">Microsoft Azure account</a>. Go ahead and <a href="https://azure.microsoft.com/free/?WT.mc_id=devto-blog-abhishgu">sign up for a free one!</a></p>
+<p>Install the <a href="https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest&amp;WT.mc_id=devto-blog-abhishgu">Azure CLI</a> if you don&rsquo;t have it already (should be quick!)</p>
+<h2 id="setup-azure-data-explorer-cluster-create-a-database-and-configure-security">Setup Azure Data Explorer cluster, create a Database and configure security</h2>
+<p>Start by creating a cluster using <a href="https://docs.microsoft.com/cli/azure/kusto/cluster?view=azure-cli-latest&amp;WT.mc_id=devto-blog-abhishgu#az-kusto-cluster-create">az kusto cluster create</a>. Once that&rsquo;s done, create a database with <a href="https://docs.microsoft.com/cli/azure/kusto/database?view=azure-cli-latest&amp;WT.mc_id=devto-blog-abhishgu#az-kusto-database-create">az kusto database create</a>, e.g.</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">az kusto cluster create -l <span style="color:#2aa198">&#34;Central US&#34;</span> -n MyADXCluster -g MyADXResGrp --sku Standard_D11_v2 --capacity <span style="color:#2aa198">2</span>
+
+az kusto database create --cluster-name MyADXCluster -g MyADXResGrp -n MyADXdb
+
+az kusto database show --cluster-name MyADXCluster --name MyADXdb --resource-group MyADXResGrp
+</code></pre></div><p>Create a Service Principal using <a href="https://docs.microsoft.com/cli/azure/ad/sp?view=azure-cli-latest&amp;WT.mc_id=devto-blog-abhishgu#az-ad-sp-create-for-rbac">az ad sp create-for-rbac</a></p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">az ad sp create-for-rbac -n &#34;test-datax-sp&#34;
+</code></pre></div><p>You will get a JSON response as such - please note down the <code>appId</code>, <code>password</code> and <code>tenant</code> as you will be using them in subsequent steps</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#268bd2">&#34;appId&#34;</span>: <span style="color:#2aa198">&#34;fe7280c7-5705-4789-b17f-71a472340429&#34;</span>,
+  <span style="color:#268bd2">&#34;displayName&#34;</span>: <span style="color:#2aa198">&#34;test-datax-sp&#34;</span>,
+  <span style="color:#268bd2">&#34;name&#34;</span>: <span style="color:#2aa198">&#34;http://test-datax-sp&#34;</span>,
+  <span style="color:#268bd2">&#34;password&#34;</span>: <span style="color:#2aa198">&#34;29c719dd-f2b3-46de-b71c-4004fb6116ee&#34;</span>,
+  <span style="color:#268bd2">&#34;tenant&#34;</span>: <span style="color:#2aa198">&#34;42f988bf-86f1-42af-91ab-2d7cd011db42&#34;</span>
+}
+</code></pre></div><p>You will need to assign roles to the <a href="https://docs.microsoft.com/azure/active-directory/develop/app-objects-and-service-principals?WT.mc_id=devto-blog-abhishgu#service-principal-object">Service Principal</a> so that it can access the database you just created. To do so using the Azure Portal, open the Azure Data Explorer cluster, navigate to <code>Data &gt; Databases</code> and select the database. Choose <code>Permissions</code> form the left menu and and click <code>Add</code> to proceed.</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/ewpjforrsyepct2wx1kn.png" alt=""></p>
+<blockquote>
+<p>For more information, please refer to <a href="https://docs.microsoft.com/azure/data-explorer/security?WT.mc_id=devto-blog-abhishgu#role-based-access-control">Secure Azure Data Explorer clusters in Azure</a></p>
+</blockquote>
+<h2 id="code-walk-through">Code walk through</h2>
+<p>At a high level, this is what the sample code does:</p>
+<ul>
+<li>Connect to an Azure Data Explorer cluster (of course!)</li>
+<li>Create a table (and list them just to be sure)</li>
+<li>Create data mapping</li>
+<li>Ingest/load existing data from a CSV file in Azure Blob storage</li>
+<li>Run a query on the data you just ingested</li>
+</ul>
+<p>Let&rsquo;s look at each of these steps</p>
+<h3 id="connect-to-an-azure-data-explorer-cluster">Connect to an Azure Data Explorer cluster</h3>
+<p>We use Service Principal to authenticate to Azure Data Explorer and provide the Azure tenant ID, client ID and client secret (which were obtained after creating the principal using <code>az ad sp create-for-rbac</code>)</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">auth <span style="color:#719e07">:=</span> kusto.Authorization{Config: auth.<span style="color:#268bd2">NewClientCredentialsConfig</span>(clientID, clientSecret, tenantID)}
+kc, err <span style="color:#719e07">:=</span> kusto.<span style="color:#268bd2">New</span>(kustoEndpoint, auth)
+<span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+    log.<span style="color:#268bd2">Fatal</span>(<span style="color:#2aa198">&#34;failed to create kusto client&#34;</span>, err)
+}
+</code></pre></div><blockquote>
+<p>You can <a href="https://github.com/abhirockzz/azure-dataexplorer-go/blob/master/cli/util/util.go#L12">check out the code here</a></p>
+</blockquote>
+<h3 id="create-table-and-data-mappings">Create table and data mappings</h3>
+<p>To create a table, we simply execute <code>create table</code></p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">func</span> <span style="color:#268bd2">CreateTable</span>(kc <span style="color:#719e07">*</span>kusto.Client, kustoDB <span style="color:#dc322f">string</span>) {
+    _, err <span style="color:#719e07">:=</span> kc.<span style="color:#268bd2">Mgmt</span>(context.<span style="color:#268bd2">Background</span>(), kustoDB, kusto.<span style="color:#268bd2">NewStmt</span>(createTableCommand))
+    <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+        log.<span style="color:#268bd2">Fatal</span>(<span style="color:#2aa198">&#34;failed to create table&#34;</span>, err)
+    }
+
+    log.<span style="color:#268bd2">Printf</span>(<span style="color:#2aa198">&#34;table %s created\n&#34;</span>, kustoTable)
+}
+</code></pre></div><blockquote>
+<p>You can <a href="https://github.com/abhirockzz/azure-dataexplorer-go/blob/master/setup/setup.go#L22">check out the code here</a></p>
+</blockquote>
+<p>Notice how we use <a href="https://godoc.org/github.com/Azure/azure-kusto-go/kusto#Client.Mgmt">client.Mgmt</a> to execute this operation since this is a <code>management</code> query. Later, you will see how to execute query to read data from Azure Data  Explorer.</p>
+<p>To confirm, we run a query to check the tables in database i.e. <code>show tables</code></p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">func</span> <span style="color:#268bd2">FindTable</span>(kc <span style="color:#719e07">*</span>kusto.Client, kustoDB <span style="color:#dc322f">string</span>) []TableInfo {
+    <span style="color:#268bd2">var</span> tables []TableInfo
+    ri, err <span style="color:#719e07">:=</span> kc.<span style="color:#268bd2">Mgmt</span>(context.<span style="color:#268bd2">Background</span>(), kustoDB, kusto.<span style="color:#268bd2">NewStmt</span>(testQuery))
+    <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+        log.<span style="color:#268bd2">Fatalf</span>(<span style="color:#2aa198">&#34;failed to execute query %s - %s&#34;</span>, testQuery, err)
+    }
+    <span style="color:#268bd2">var</span> t TableInfo
+    <span style="color:#719e07">for</span> {
+        row, err <span style="color:#719e07">:=</span> ri.<span style="color:#268bd2">Next</span>()
+        <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+            <span style="color:#719e07">if</span> err <span style="color:#719e07">==</span> io.EOF {
+                <span style="color:#719e07">break</span>
+            } <span style="color:#719e07">else</span> {
+                log.<span style="color:#268bd2">Println</span>(<span style="color:#2aa198">&#34;error&#34;</span>, err)
+            }
+        }
+        row.<span style="color:#268bd2">ToStruct</span>(<span style="color:#719e07">&amp;</span>t)
+        tables = <span style="color:#b58900">append</span>(tables, t)
+    }
+    <span style="color:#719e07">return</span> tables
+}
+<span style="color:#719e07">...</span>
+<span style="color:#268bd2">type</span> TableInfo <span style="color:#268bd2">struct</span> {
+    Name <span style="color:#dc322f">string</span> <span style="color:#2aa198">`kusto:&#34;TableName&#34;`</span>
+    DB   <span style="color:#dc322f">string</span> <span style="color:#2aa198">`kusto:&#34;DatabaseName&#34;`</span>
+}
+</code></pre></div><blockquote>
+<p>You can <a href="https://github.com/abhirockzz/azure-dataexplorer-go/blob/master/setup/setup.go#L32">check out the code here</a></p>
+</blockquote>
+<p>After executing the query, <a href="https://github.com/Azure/azure-kusto-go/blob/master/kusto/data/table/table.go#L120"><code>ToStruct</code></a> is used to save the result to an instance of a user-defined <code>TableInfo</code> struct</p>
+<p>Once the table is created, we can <a href="https://docs.microsoft.com/azure/data-explorer/kusto/management/mappings?WT.mc_id=devto-blog-abhishgu">configure data mappings</a> that are used during ingestion to map incoming data to columns inside Kusto tables</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">func</span> <span style="color:#268bd2">CreateMapping</span>(kc <span style="color:#719e07">*</span>kusto.Client, kustoDB <span style="color:#dc322f">string</span>) {
+    _, err <span style="color:#719e07">:=</span> kc.<span style="color:#268bd2">Mgmt</span>(context.<span style="color:#268bd2">Background</span>(), kustoDB, kusto.<span style="color:#268bd2">NewStmt</span>(createMappingCommand))
+    <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+        log.<span style="color:#268bd2">Fatal</span>(<span style="color:#2aa198">&#34;failed to create mapping&#34;</span>, err)
+    }
+    log.<span style="color:#268bd2">Printf</span>(<span style="color:#2aa198">&#34;mapping %s created\n&#34;</span>, kustoMappingRefName)
+}
+</code></pre></div><blockquote>
+<p>You can <a href="https://github.com/abhirockzz/azure-dataexplorer-go/blob/master/setup/setup.go#L61">check out the code here</a></p>
+</blockquote>
+<h3 id="ingest-data-from-azure-blob-storage">Ingest data from Azure Blob storage</h3>
+<p>To ingest data we use the <a href="https://godoc.org/github.com/Azure/azure-kusto-go/kusto/ingest#Ingestion"><code>Ingestion</code></a> client</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">const</span> blobStorePathFormat = <span style="color:#2aa198">&#34;https://%s.blob.core.windows.net/%s/%s%s&#34;</span>
+
+<span style="color:#268bd2">func</span> <span style="color:#268bd2">CSVFromBlob</span>(kc <span style="color:#719e07">*</span>kusto.Client, blobStoreAccountName, blobStoreContainer, blobStoreToken, blobStoreFileName, kustoMappingRefName, kustoDB, kustoTable <span style="color:#dc322f">string</span>) {
+    kIngest, err <span style="color:#719e07">:=</span> ingest.<span style="color:#268bd2">New</span>(kc, kustoDB, kustoTable)
+    <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+        log.<span style="color:#268bd2">Fatal</span>(<span style="color:#2aa198">&#34;failed to create ingestion client&#34;</span>, err)
+    }
+    blobStorePath <span style="color:#719e07">:=</span> fmt.<span style="color:#268bd2">Sprintf</span>(blobStorePathFormat, blobStoreAccountName, blobStoreContainer, blobStoreFileName, blobStoreToken)
+    err = kIngest.<span style="color:#268bd2">FromFile</span>(context.<span style="color:#268bd2">Background</span>(), blobStorePath, ingest.<span style="color:#268bd2">FileFormat</span>(ingest.CSV), ingest.<span style="color:#268bd2">IngestionMappingRef</span>(kustoMappingRefName, ingest.CSV))
+
+    <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+        log.<span style="color:#268bd2">Fatal</span>(<span style="color:#2aa198">&#34;failed to ingest file&#34;</span>, err)
+    }
+    log.<span style="color:#268bd2">Println</span>(<span style="color:#2aa198">&#34;Ingested file from -&#34;</span>, blobStorePath)
+}
+</code></pre></div><blockquote>
+<p>You can <a href="https://github.com/abhirockzz/azure-dataexplorer-go/blob/master/load/ingest.go#L15">check out the code here</a></p>
+</blockquote>
+<p>We have the path to the file in Azure Blob storage and we refer to it in <a href="https://godoc.org/github.com/Azure/azure-kusto-go/kusto/ingest#Ingestion.FromFile"><code>FromFile</code></a> function along with file type (<code>CSV</code> in this case) as well as data mapping we just created (<code>StormEvents_CSV_Mapping</code>)</p>
+<h3 id="query-data">Query data</h3>
+<p>We fetch some data from the <code>StormEvents</code> table using the following query:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">StormEvents | where EventType == &#39;Flood&#39; and State == &#39;WASHINGTON&#39; | sort by DamageProperty desc | project StartTime, EndTime, Source, DamageProperty
+</code></pre></div><p>This time, we use <code>client.Query</code> (not <code>Mgmt</code>) to read data from the table.</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">func</span> <span style="color:#268bd2">Get</span>(kc <span style="color:#719e07">*</span>kusto.Client, kustoDB <span style="color:#dc322f">string</span>) []StormDetails {
+    <span style="color:#268bd2">var</span> events []StormDetail
+    ri, err <span style="color:#719e07">:=</span> kc.<span style="color:#268bd2">Query</span>(context.<span style="color:#268bd2">Background</span>(), kustoDB, kusto.<span style="color:#268bd2">NewStmt</span>(query))
+
+    <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+        log.<span style="color:#268bd2">Fatalf</span>(<span style="color:#2aa198">&#34;failed to execute query %s - %s&#34;</span>, query, err)
+    }
+    <span style="color:#719e07">for</span> {
+        row, err <span style="color:#719e07">:=</span> ri.<span style="color:#268bd2">Next</span>()
+        <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+            <span style="color:#719e07">if</span> err <span style="color:#719e07">==</span> io.EOF {
+                <span style="color:#719e07">break</span>
+            } <span style="color:#719e07">else</span> {
+                log.<span style="color:#268bd2">Println</span>(<span style="color:#2aa198">&#34;error&#34;</span>, err)
+            }
+        }
+        <span style="color:#268bd2">var</span> event StormDetail
+        row.<span style="color:#268bd2">ToStruct</span>(<span style="color:#719e07">&amp;</span>event)
+        events = <span style="color:#b58900">append</span>(events, event)
+    }
+    <span style="color:#719e07">return</span> events
+<span style="color:#719e07">...</span>
+<span style="color:#268bd2">type</span> StormDetail <span style="color:#268bd2">struct</span> {
+    Start  time.Time <span style="color:#2aa198">`kusto:&#34;StartTime&#34;`</span>
+    End    time.Time <span style="color:#2aa198">`kusto:&#34;EndTime&#34;`</span>
+    From   <span style="color:#dc322f">string</span>    <span style="color:#2aa198">`kusto:&#34;Source&#34;`</span>
+    Damage <span style="color:#dc322f">int32</span>     <span style="color:#2aa198">`kusto:&#34;DamageProperty&#34;`</span>
+}
+</code></pre></div><p>Each row in the result in converted into a <code>StormDetail</code> struct using <code>ToStruct</code></p>
+<blockquote>
+<p>You can <a href="https://github.com/abhirockzz/azure-dataexplorer-go/blob/master/query/query.go#L15">check out the code here</a></p>
+</blockquote>
+<p>The list of <code>StormDetail</code>s is then displayed to stdout in the form a user-friendly tabular format</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#719e07">...</span>
+data <span style="color:#719e07">:=</span> [][]<span style="color:#dc322f">string</span>{}
+<span style="color:#719e07">for</span> _, detail <span style="color:#719e07">:=</span> <span style="color:#719e07">range</span> details {
+    data = <span style="color:#b58900">append</span>(data, []<span style="color:#dc322f">string</span>{detail.Start.<span style="color:#268bd2">String</span>(), detail.End.<span style="color:#268bd2">String</span>(), detail.From, strconv.<span style="color:#268bd2">Itoa</span>(<span style="color:#b58900">int</span>(detail.Damage))})
+}
+log.<span style="color:#268bd2">Println</span>(<span style="color:#2aa198">&#34;StormEvents data....&#34;</span>)
+table <span style="color:#719e07">:=</span> tablewriter.<span style="color:#268bd2">NewWriter</span>(os.Stdout)
+table.<span style="color:#268bd2">SetHeader</span>([]<span style="color:#dc322f">string</span>{<span style="color:#2aa198">&#34;Start Time&#34;</span>, <span style="color:#2aa198">&#34;End Time&#34;</span>, <span style="color:#2aa198">&#34;From&#34;</span>, <span style="color:#2aa198">&#34;Damage&#34;</span>})
+
+<span style="color:#719e07">for</span> _, v <span style="color:#719e07">:=</span> <span style="color:#719e07">range</span> data {
+    table.<span style="color:#268bd2">Append</span>(v)
+}
+table.<span style="color:#268bd2">Render</span>()
+<span style="color:#719e07">...</span>
+</code></pre></div><blockquote>
+<p>You can <a href="https://github.com/abhirockzz/azure-dataexplorer-go/blob/master/cli/query.go#L23">check out the code here</a></p>
+</blockquote>
+<p>Finally, to drop the table, we use <code>.drop table StormEvents</code></p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#268bd2">const</span> dropTableQ = <span style="color:#2aa198">&#34;.drop table StormEvents&#34;</span>
+
+<span style="color:#268bd2">func</span> <span style="color:#268bd2">dropTable</span>(kc <span style="color:#719e07">*</span>kusto.Client) {
+    _, err <span style="color:#719e07">:=</span> kc.<span style="color:#268bd2">Mgmt</span>(context.<span style="color:#268bd2">Background</span>(), kustoDB, kusto.<span style="color:#268bd2">NewStmt</span>(dropTableQ))
+    <span style="color:#719e07">if</span> err <span style="color:#719e07">!=</span> <span style="color:#cb4b16">nil</span> {
+        log.<span style="color:#268bd2">Fatal</span>(<span style="color:#2aa198">&#34;failed to drop table - &#34;</span>, err)
+    }
+}
+</code></pre></div><blockquote>
+<p>You can <a href="https://github.com/abhirockzz/azure-dataexplorer-go/blob/master/setup/setup.go#L72">check out the code here</a></p>
+</blockquote>
+<h2 id="run-the-example">Run the example</h2>
+<p>Now that you have an idea of what&rsquo;s going on, let&rsquo;s try it out using a CLI</p>
+<p>Set the required environment variables</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#b58900">export</span> <span style="color:#268bd2">AZURE_SP_CLIENT_ID</span><span style="color:#719e07">=</span><span style="color:#2aa198">&#34;service principal client id&#34;</span>
+<span style="color:#b58900">export</span> <span style="color:#268bd2">AZURE_SP_CLIENT_SECRET</span><span style="color:#719e07">=</span><span style="color:#2aa198">&#34;&lt;service principal client secret&gt;&#34;</span>
+<span style="color:#b58900">export</span> <span style="color:#268bd2">AZURE_SP_TENANT_ID</span><span style="color:#719e07">=</span><span style="color:#2aa198">&#34;&lt;tenant ID&gt;&#34;</span>
+<span style="color:#586e75">#e.g. https://mykusto.southeastasia.kusto.windows.net</span>
+<span style="color:#b58900">export</span> <span style="color:#268bd2">KUSTO_ENDPOINT</span><span style="color:#719e07">=</span><span style="color:#2aa198">&#34;https://&lt;cluster name&gt;.&lt;azure region&gt;.kusto.windows.net&#34;</span>
+</code></pre></div><p>Get the code and build it</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/abhirockzz/azure-dataexplorer-go
+<span style="color:#b58900">cd</span> azure-dataexplorer-go
+go build -o azdatax
+
+//to confirm
+chmod a+x azdatax <span style="color:#719e07">&amp;&amp;</span> ./azdatax
+
+//output
+CLI to <span style="color:#b58900">test</span> sample program <span style="color:#719e07">for</span> Azure Data Explorer
+
+Usage:
+  azdatax <span style="color:#719e07">[</span>command<span style="color:#719e07">]</span>
+
+Available Commands:
+  create-mapping creates a mapping named StormEvents_CSV_Mapping
+  create-table   creates a table named StormEvents
+  drop-table     drops the StormEvents table
+  get            queries data from StormEvents
+  <span style="color:#b58900">help</span>           Help about any <span style="color:#b58900">command</span>
+  ingest         ingests CSV file from blob store
+  list-tables    lists tables
+
+Flags:
+  -h, --help   <span style="color:#b58900">help</span> <span style="color:#719e07">for</span> azdatax
+
+Use <span style="color:#2aa198">&#34;azdatax [command] --help&#34;</span> <span style="color:#719e07">for</span> more information about a command.
+</code></pre></div><p>Let&rsquo;s start by creating a table:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./azdatax create-table --dbname &lt;name of the database you created initially&gt;
+
+//output
+Connected to Azure Data Explorer
+table StormEvents created
+</code></pre></div><p>To list tables:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./azdatax list-tables --dbname &lt;name of the database you created initially&gt;
+
+//output
+Connected to Azure Data Explorer
+Table name: StormEvents, Database name: testkustodb
+</code></pre></div><p>To create the data mapping</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./azdatax create-mapping --dbname &lt;name of the database you created initially&gt;
+
+//output
+Connected to Azure Data Explorer
+mapping StormEvents_CSV_Mapping created
+</code></pre></div><p>To ingest data:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./azdatax ingest --dbname &lt;name of the database you created initially&gt;
+
+//output
+Connected to Azure Data Explorer
+Ingested file from - https://kustosamplefiles.blob.core.windows.net/samplefiles/StormEvents.csv?st<span style="color:#719e07">=</span>2018-08-31T22%3A02%3A25Z&amp;<span style="color:#268bd2">se</span><span style="color:#719e07">=</span>2020-09-01T22%3A02%3A00Z&amp;<span style="color:#268bd2">sp</span><span style="color:#719e07">=</span>r&amp;<span style="color:#268bd2">sv</span><span style="color:#719e07">=</span>2018-03-28&amp;<span style="color:#268bd2">sr</span><span style="color:#719e07">=</span>b&amp;<span style="color:#268bd2">sig</span><span style="color:#719e07">=</span>LQIbomcKI8Ooz425hWtjeq6d61uEaq21UVX7YrM61N4%3D
+</code></pre></div><p>Wait for a while for the ingestion to complete before you try to query the data (next step)</p>
+<p>To query data</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./azdatax get --dbname &lt;name of the database you created initially&gt;
+
+//output
+Connected to Azure Data Explorer
+StormEvents data....
++-------------------------------+-------------------------------+---------------------------+----------+
+|          START TIME           |           END TIME            |           FROM            |  DAMAGE  |
++-------------------------------+-------------------------------+---------------------------+----------+
+| 2007-12-02 23:00:00 +0000 UTC | 2007-12-05 23:00:00 +0000 UTC | Official NWS Observations | <span style="color:#2aa198">50000000</span> |
+| 2007-01-03 00:00:00 +0000 UTC | 2007-01-03 22:00:00 +0000 UTC | Newspaper                 |    <span style="color:#2aa198">20000</span> |
+| 2007-12-03 03:00:00 +0000 UTC | 2007-12-05 19:00:00 +0000 UTC | Official NWS Observations |    <span style="color:#2aa198">12000</span> |
+| 2007-01-03 00:00:00 +0000 UTC | 2007-01-03 22:00:00 +0000 UTC | Newspaper                 |     <span style="color:#2aa198">5000</span> |
+| 2007-03-12 00:00:00 +0000 UTC | 2007-03-13 23:00:00 +0000 UTC | Public                    |        <span style="color:#2aa198">0</span> |
+| 2007-03-12 00:00:00 +0000 UTC | 2007-03-14 23:00:00 +0000 UTC | Other Federal             |        <span style="color:#2aa198">0</span> |
++-------------------------------+-------------------------------+---------------------------+----------+
+</code></pre></div><p>Finally, to drop the StormEvents table:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">./azdatax drop-table --dbname &lt;name of the database you created initially&gt;
+
+//output
+Connected to Azure Data Explorer
+Table StormEvents dropped
+</code></pre></div><h2 id="conclusion">Conclusion</h2>
+<p>Hopefully this was helpful in demonstrating how to use the Go SDK to interact with Azure Data Explorer. This obviously just one of the ways! For more, <a href="https://docs.microsoft.com/azure/data-explorer/?WT.mc_id=devto-blog-abhishgu">dig into the documentation</a> and happy exploring!</p>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+					<nav class="nav tags">
+							<ul class="flat">
+								
+								<li><a href="/abhirockzz.github.io/tags/golang">golang</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/azure-data-explorer">azure data explorer</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/big-data">big data</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/nosql">nosql</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/azure">azure</a></li>
+								
+							</ul>
+					</nav>
+				
+			
+		</div>
+		</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> © Copyright notice |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54762029-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

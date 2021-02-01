@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Expose Kubernetes services with ngrok - Abhishek&#39;s blog (work in progress)</title><link rel="icon" type="image/png" href=icons/myicon.png /><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Expose Kubernetes services with ngrok" />
+<meta property="og:description" content="Very often, there is a need to expose Kubernetes apps running in minikube to the public internet. This post just provides a manual, yet quick and dirty hack for this using ngrok (it’s probably been done before, but here it goes anyway)" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="abhirockzz.github.io/posts/kubernetes-services-ngrok/" />
+<meta property="article:published_time" content="2019-04-11T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-04-11T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Expose Kubernetes services with ngrok"/>
+<meta name="twitter:description" content="Very often, there is a need to expose Kubernetes apps running in minikube to the public internet. This post just provides a manual, yet quick and dirty hack for this using ngrok (it’s probably been done before, but here it goes anyway)"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/main.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/dark.css" media="(prefers-color-scheme: dark)" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom-dark.css" media="(prefers-color-scheme: dark)" />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="abhirockzz.github.iojs/main.js"></script>
+	<script src="abhirockzz.github.iojs/abc.js"></script>
+	<script src="abhirockzz.github.iojs/xyz.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="abhirockzz.github.io">
+	<h1 class="site-title"><a href="abhirockzz.github.io">Abhishek&#39;s blog (work in progress)</a></h1>
+	<div class="site-description"><h2>Mostly about Kafka, Databases, Kubernetes and other open source stuff</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/abhirockzz/" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/abhi_tweeter" title="Twitter"><i data-feather="twitter"></i></a><a href="https://www.linkedin.com/in/abhirockzz/" title="LinkedIn"><i data-feather="linkedin"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="abhirockzz.github.io/">Home</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/about">About</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/books">Books</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Expose Kubernetes services with ngrok</h1>
+			<div class="meta">Posted at &mdash; Apr 11, 2019</div>
+		</div>
+
+		<div class="markdown">
+			<p>Very often, there is a need to expose Kubernetes apps running in minikube to the public internet. This post just provides a manual, yet quick and dirty hack for this using ngrok (it’s probably been done before, but here it goes anyway)</p>
+<p>We’ll use a simple <a href="https://www.nginx.com/">nginx</a> app to test things out i.e. we’ll expose an nginx server (running as a single replica <a href="https://raw.githubusercontent.com/kubernetes/website/master/content/en/examples/application/deployment.yaml">Kubernetes Deployment</a>) as a publicly accessible URL.</p>
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*j2nb3_3HfuBz2QovyO9lmA.jpeg" alt=""></p>
+<h3 id="test-app-nginx">Test app (nginx)</h3>
+<p>Start by creating the <strong>nginx</strong> Deployment</p>
+<pre><code>kubectl apply -f [https://raw.githubusercontent.com/abhirockzz/ngrok-kubernetes/master/nginx-deployment.yaml](https://raw.githubusercontent.com/abhirockzz/ngrok-kubernetes/master/nginx-deployment.yaml)
+</code></pre>
+<p>Expose it inside the cluster by creating a corresponding Service (typeClusterIP)</p>
+<pre><code>kubectl apply -f [https://raw.githubusercontent.com/abhirockzz/ngrok-kubernetes/master/nginx-service.yaml](https://raw.githubusercontent.com/abhirockzz/ngrok-kubernetes/master/nginx-service.yaml)
+</code></pre>
+<h3 id="enter-ngrok">Enter ngrok..</h3>
+<p>To expose the nginx Service we just created, we can create a ngrok deployment which will run the ngrok process with an HTTP tunnel to the nginx Service(using the Service name)</p>
+<p>Create the <strong>ngrok</strong> Deployment</p>
+<pre><code>kubectl apply -f [https://raw.githubusercontent.com/abhirockzz/ngrok-kubernetes/master/ngrok-deployment.yaml](https://raw.githubusercontent.com/abhirockzz/ngrok-kubernetes/master/ngrok-deployment.yaml)
+</code></pre>
+<p>Now you need to extract the ngrok URL. The below command does a couple of things</p>
+<ul>
+<li>
+<p>gets the Pod for the ngrok Deployment</p>
+</li>
+<li>
+<p>uses the HTTP endpoint inside of the ngrok Pod to get the details (using kubectl exec inside the running Pod)</p>
+<p>kubectl exec $(kubectl get pods -l=app=ngrok -o=jsonpath='{.items[0].metadata.name}') &ndash; curl <a href="http://localhost:4040/api/tunnels">http://localhost:4040/api/tunnels</a></p>
+</li>
+</ul>
+<p>Output will be similar to what you see below — refer to the public_url field to grab the ngrok URL accessible via public internet (in this example, it’s <a href="https://b42658ec.ngrok.io">https://b42658ec.ngrok.io</a>)</p>
+<!-- raw HTML omitted -->
+<p>Access the URL and it should lead you to ngnix home page</p>
+<p><img src="https://cdn-images-1.medium.com/max/2740/1*pPNGzM-t7nId0DK6cZzDzg.png" alt="nginx in k8s exposed via ngrok"><em>nginx in k8s exposed via ngrok</em></p>
+<h3 id="optionally">Optionally….</h3>
+<p>…. if you want to access the ngrok dashboard</p>
+<p>Expose it using aService (type NodePort)</p>
+<pre><code>kubectl apply -f [https://raw.githubusercontent.com/abhirockzz/ngrok-kubernetes/master/ngrok-service.yaml](https://raw.githubusercontent.com/abhirockzz/ngrok-kubernetes/master/ngrok-service.yaml)
+</code></pre>
+<p>Check the random port</p>
+<pre><code>kubectl get svc ngrok-service -o=jsonpath='{.spec.ports[?(@.port==4040)].nodePort}'
+
+//e.g. 30552
+</code></pre>
+<p>Get the Minikube IP</p>
+<pre><code>$ minikube ip
+
+192.168.99.100
+</code></pre>
+<p>Open it in your browser</p>
+<pre><code>[http://&lt;](http://192.168.99.100)minikube-ip&gt;:&lt;service-node-port&gt;/status
+
+e.g. [http://192.168.99.100:30552/status](http://192.168.99.100:30552/status)
+</code></pre>
+<p>You should see the dashboard</p>
+<p><img src="https://cdn-images-1.medium.com/max/5400/1*BWmpW46jRaTyDFsxziFn6g.png" alt="ngrok dashboard"><em>ngrok dashboard</em></p>
+<p>That’s all there is to it. The code (just a bunch of YAMLs) is on GitHub
+<a href="https://github.com/abhirockzz/ngrok-kubernetes"><strong>abhirockzz/ngrok-kubernetes</strong>
+*Contribute to abhirockzz/ngrok-kubernetes development by creating an account on GitHub.*github.com</a></p>
+<p>Cheers!</p>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+					<nav class="nav tags">
+							<ul class="flat">
+								
+								<li><a href="/abhirockzz.github.io/tags/kubernetes">kubernetes</a></li>
+								
+							</ul>
+					</nav>
+				
+			
+		</div>
+		</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> © Copyright notice |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54762029-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>

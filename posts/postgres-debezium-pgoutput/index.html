@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>PostgreSQL pgoutput plugin for change data capture - Abhishek&#39;s blog (work in progress)</title><link rel="icon" type="image/png" href=icons/myicon.png /><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="PostgreSQL pgoutput plugin for change data capture" />
+<meta property="og:description" content="Using PostgreSQL pgoutput plugin for change data capture with Debezium on Azure" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="abhirockzz.github.io/posts/postgres-debezium-pgoutput/" />
+<meta property="article:published_time" content="2020-08-13T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-08-13T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="PostgreSQL pgoutput plugin for change data capture"/>
+<meta name="twitter:description" content="Using PostgreSQL pgoutput plugin for change data capture with Debezium on Azure"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="abhirockzz.github.iocss/main.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom.css" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/dark.css" media="(prefers-color-scheme: dark)" />
+	<link rel="stylesheet" type="text/css" href="abhirockzz.github.iocss/custom-dark.css" media="(prefers-color-scheme: dark)" />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="abhirockzz.github.iojs/main.js"></script>
+	<script src="abhirockzz.github.iojs/abc.js"></script>
+	<script src="abhirockzz.github.iojs/xyz.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="abhirockzz.github.io">
+	<h1 class="site-title"><a href="abhirockzz.github.io">Abhishek&#39;s blog (work in progress)</a></h1>
+	<div class="site-description"><h2>Mostly about Kafka, Databases, Kubernetes and other open source stuff</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/abhirockzz/" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/abhi_tweeter" title="Twitter"><i data-feather="twitter"></i></a><a href="https://www.linkedin.com/in/abhirockzz/" title="LinkedIn"><i data-feather="linkedin"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="abhirockzz.github.io/">Home</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/about">About</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/books">Books</a>
+			</li>
+			
+			<li>
+				<a href="abhirockzz.github.io/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">PostgreSQL pgoutput plugin for change data capture</h1>
+			<div class="meta">Posted at &mdash; Aug 13, 2020</div>
+		</div>
+
+		<div class="markdown">
+			<p><a href="https://dev.to/azure/tutorial-set-up-a-change-data-capture-architecture-on-azure-using-debezium-postgres-and-kafka-49h6">Set up a Change Data Capture architecture on Azure using Debezium, Postgres and Kafka</a> was a tutorial on how to use Debezium for change data capture from Azure PostgreSQL and send them to Azure Event Hubs for Kafka - it used the <code>wal2json</code> output plugin.</p>
+<h3 id="what-about-the-pgoutput-plugin">What about the <code>pgoutput</code> plugin?</h3>
+<p>This blog will provide a quick walk through of how to <code>pgoutput</code> plugin and provide clarification <a href="https://dev.to/denisarnaud/comment/121e7">on this point</a> raised by <a href="https://dev.to/denisarnaud">Denis Arnaud</a> (thank you for brining it up!)</p>
+<p>I will not be repeating a lot of details and use containerized versions (using Docker Compose) of Kafka connect, Kafka (and Zookeeper) to keep things simple. So, the only thing you need is Azure PostgreSQL, which you can setup using a variety of options including, the <a href="https://docs.microsoft.com/azure/postgresql/quickstart-create-server-database-portal?WT.mc_id=devto-blog-abhishgu">Azure Portal</a>, <a href="https://docs.microsoft.com/azure/postgresql/quickstart-create-server-database-azure-cli?WT.mc_id=devto-blog-abhishgu">Azure CLI</a>, <a href="https://docs.microsoft.com/azure/postgresql/quickstart-create-postgresql-server-database-using-azure-powershell?WT.mc_id=devto-blog-abhishgu">Azure PowerShell</a>, <a href="https://docs.microsoft.com/azure/postgresql/quickstart-create-postgresql-server-database-using-arm-template?tabs=azure-portal&amp;WT.mc_id=devto-blog-abhishgu">ARM template</a>.</p>
+<blockquote>
+<p>The resources are available on GitHub - <a href="https://github.com/abhirockzz/debezium-postgres-pgoutput">https://github.com/abhirockzz/debezium-postgres-pgoutput</a></p>
+</blockquote>
+<h3 id="using-the-right-publicationautocreatemode">Using the right <code>publication.autocreate.mode</code></h3>
+<p>With the <code>pgoutput</code> plugin, it&rsquo;s important that you use the appropriate value for <a href="https://debezium.io/documentation/reference/connectors/postgresql.html#postgresql-publication-autocreate-mode">publication.autocreate.mode</a>. If you&rsquo;re using <strong>all_tables</strong> (which is the default), <em>you need to ensure that the publication is created up-front for the specific table(s) you want to configure for change data capture. If the publication is not found, the connector will try to create one using <code>CREATE PUBLICATION &lt;publication_name&gt; FOR ALL TABLES;</code> which will fail due to lack of permissions.</em></p>
+<p>The other two options work as expected:</p>
+<ul>
+<li><strong>disabled</strong>: you need to ensure that the publication is created up-front. The connector will <em>not</em> attempt to create the publication if it isn&rsquo;t found to exist upon startup - it will throw an exception and stop.</li>
+<li><strong>filtered</strong>: you can (optionally) choose to create the publication up-front. If the publication is not found, the connector will create a new publication for all those tables matching the current filter configuration.</li>
+</ul>
+<blockquote>
+<p>This has been highlighted in the docs <a href="https://debezium.io/documentation/reference/1.3/connectors/postgresql.html#postgresql-on-azure">https://debezium.io/documentation/reference/1.3/connectors/postgresql.html#postgresql-on-azure</a></p>
+</blockquote>
+<h3 id="lets-try-the-different-scenarios">Let&rsquo;s try the different scenarios..</h3>
+<p>Before that:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/abhirockzz/debezium-postgres-pgoutput <span style="color:#719e07">&amp;&amp;</span> <span style="color:#b58900">cd</span> debezium-postgres-pgoutput
+</code></pre></div><p>Start Kafka, Zookeeper and Kafka Connect containers:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">export DEBEZIUM_VERSION=1.2
+docker-compose up
+</code></pre></div><blockquote>
+<p>It might take a while to pull the containers for the first time</p>
+</blockquote>
+<p>Once all the containers are up and running, connect to Azure PostgreSQL, create a table and insert some data:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">psql <span style="color:#719e07">-</span>h <span style="color:#719e07">&lt;</span>DBNAME<span style="color:#719e07">&gt;</span>.postgres.<span style="color:#719e07">database</span>.azure.com <span style="color:#719e07">-</span>p <span style="color:#2aa198">5432</span> <span style="color:#719e07">-</span>U <span style="color:#719e07">&lt;</span>DBUSER<span style="color:#719e07">&gt;@&lt;</span>DBNAME<span style="color:#719e07">&gt;</span> <span style="color:#719e07">-</span>W <span style="color:#719e07">-</span>d postgres <span style="color:#586e75">--set=sslmode=require
+</span><span style="color:#586e75"></span>
+psql <span style="color:#719e07">-</span>h abhishgu<span style="color:#719e07">-</span>pg.postgres.<span style="color:#719e07">database</span>.azure.com <span style="color:#719e07">-</span>p <span style="color:#2aa198">5432</span> <span style="color:#719e07">-</span>U abhishgu<span style="color:#719e07">@</span>abhishgu<span style="color:#719e07">-</span>pg <span style="color:#719e07">-</span>W <span style="color:#719e07">-</span>d postgres <span style="color:#586e75">--set=sslmode=require
+</span><span style="color:#586e75"></span>
+<span style="color:#719e07">CREATE</span> <span style="color:#719e07">TABLE</span> inventory (id <span style="color:#b58900">SERIAL</span>, item <span style="color:#b58900">VARCHAR</span>(<span style="color:#2aa198">30</span>), qty <span style="color:#b58900">INT</span>, <span style="color:#719e07">PRIMARY</span> <span style="color:#719e07">KEY</span>(id));
+</code></pre></div><p><strong>When publication.autocreate.mode is set to filtered</strong></p>
+<p>This works well with Azure PostgreSQL - it does not require super user permissions because the connector creates the publication for a <em>specific</em> table(s) based on the filter/*list values</p>
+<p>Update the connector config file (<code>pg-source-connector.json</code>) with details of your Azure PostgreSQL instance and then create the connector</p>
+<p>To create the connector:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl -X POST -H <span style="color:#2aa198">&#34;Content-Type: application/json&#34;</span> --data @pg-source-connector.json http://localhost:8083/connectors
+</code></pre></div><p>Notice the logs (in the docker compose terminal):</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Creating new publication &#39;mytestpub&#39; for plugin &#39;PGOUTPUT&#39;   [io.debezium.connector.postgresql.connection.PostgresReplicationConnection]
+</code></pre></div><p>Once the connector starts, check the publications in PostgreSQL:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  pubname  | schemaname | tablename 
+-----------+------------+-----------
+ mytestpub | public     | inventory
+</code></pre></div><p>Does it work?</p>
+<p>Insert a couple of records in the <code>inventory</code> table</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">psql <span style="color:#719e07">-</span>h <span style="color:#719e07">&lt;</span>DBNAME<span style="color:#719e07">&gt;</span>.postgres.<span style="color:#719e07">database</span>.azure.com <span style="color:#719e07">-</span>p <span style="color:#2aa198">5432</span> <span style="color:#719e07">-</span>U <span style="color:#719e07">&lt;</span>DBUSER<span style="color:#719e07">&gt;@&lt;</span>DBNAME<span style="color:#719e07">&gt;</span> <span style="color:#719e07">-</span>W <span style="color:#719e07">-</span>d postgres <span style="color:#586e75">--set=sslmode=require
+</span><span style="color:#586e75"></span>
+<span style="color:#719e07">INSERT</span> <span style="color:#719e07">INTO</span> inventory (item, qty) <span style="color:#719e07">VALUES</span> (<span style="color:#2aa198">&#39;apples&#39;</span>, <span style="color:#2aa198">&#39;100&#39;</span>);
+<span style="color:#719e07">INSERT</span> <span style="color:#719e07">INTO</span> inventory (item, qty) <span style="color:#719e07">VALUES</span> (<span style="color:#2aa198">&#39;oranges&#39;</span>, <span style="color:#2aa198">&#39;42&#39;</span>);
+
+<span style="color:#719e07">select</span> <span style="color:#719e07">*</span> <span style="color:#719e07">from</span> inventory;
+</code></pre></div><p>The connector should push the change events from PostgreSQL WAL (write ahead log) to Kafka. Check the messages in the corresponding Kafka topic:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">//exec into the kafka docker container
+docker <span style="color:#b58900">exec</span> -it debezium-postgres-pgoutput_kafka_1 bash
+
+<span style="color:#b58900">cd</span> bin <span style="color:#719e07">&amp;&amp;</span> ./kafka-console-consumer.sh --topic myserver.public.inventory --bootstrap-server kafka:9092 --from-beginning
+</code></pre></div><p>You should see a couple of change log event payloads (corresponding to the two <code>INSERT</code>s)</p>
+<blockquote>
+<p>yes they are verbose since the schema is included in the payload</p>
+</blockquote>
+<p><strong>Change publication.autocreate.mode to disabled</strong></p>
+<p>For this mode, we need a publication created up-front. Since we already have one (<code>mytestpub</code>), just use it. All you need to do is update the <code>publication.autocreate.mode</code> in <code>pg-source-connector.json</code> to <code>disabled</code>.</p>
+<p>Re-create the connector:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">//delete
+curl -X DELETE localhost:8083/connectors/inventory-connector
+
+//create
+curl -X POST -H <span style="color:#2aa198">&#34;Content-Type: application/json&#34;</span> --data @pg-source-connector.json http://localhost:8083/connectors
+</code></pre></div><p>Test it end to end using the same steps as in the previous section - everything should work just fine!</p>
+<blockquote>
+<p>Just to confirm, update the <code>publication.name</code> in connector config to one that does not exist. The connector will fail to start due to missing publication (as expected)</p>
+</blockquote>
+<p><strong>Try publication.autocreate.mode = all_tables</strong></p>
+<p>Set <code>publication.autocreate.mode</code> to <code>all_tables</code>, <code>publication.name</code> to one that does not exist (e.g. <code>testpub1</code>) and create the connector:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl -X POST -H <span style="color:#2aa198">&#34;Content-Type: application/json&#34;</span> --data @pg-source-connector.json http://localhost:8083/connectors
+</code></pre></div><p>(as expected) It will fail with an error similar to this:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">....
+INFO Creating new publication <span style="color:#2aa198">&#39;testpub1&#39;</span> <span style="color:#719e07">for</span> plugin <span style="color:#2aa198">&#39;PGOUTPUT&#39;</span> <span style="color:#719e07">(</span>io.debezium.connector.postgresql.connection.PostgresReplicationConnection:127<span style="color:#719e07">)</span>
+ERROR WorkerSourceTask<span style="color:#719e07">{</span><span style="color:#268bd2">id</span><span style="color:#719e07">=</span>inventory-connector-0<span style="color:#719e07">}</span> Task threw an uncaught and unrecoverable exception <span style="color:#719e07">(</span>org.apache.kafka.connect.runtime.WorkerTask:179<span style="color:#719e07">)</span>
+io.debezium.jdbc.JdbcConnectionException: ERROR: must be superuser to create FOR ALL TABLES publication
+....
+</code></pre></div><p>Notice the part <code>must be superuser to create FOR ALL TABLES publication</code> - as previously mentioned, <code>CREATE PUBLICATION &lt;publication_name&gt; FOR ALL TABLES;</code> failed due to lack of superuser permissions.</p>
+<blockquote>
+<p>As I mentioned earlier, you need to work around this by creating the publication <em>manually</em> for <em>specific</em> tables only</p>
+</blockquote>
+<h3 id="clean-up">Clean up</h3>
+<p>To clean up, delete the Azure PostgreSQL instance using <a href="https://docs.microsoft.com/cli/azure/postgres/server?view=azure-cli-latest&amp;WT.mc_id=devto-blog-abhishgu#az-postgres-server-delete">az postgres server delete</a> and remove the containers</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">az postgres server delete -g &lt;resource group&gt; -n &lt;server name&gt;
+docker-compose down -v
+</code></pre></div><p>That&rsquo;s it for this short blog post. Stay tuned for more!</p>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+					<nav class="nav tags">
+							<ul class="flat">
+								
+								<li><a href="/abhirockzz.github.io/tags/postgresql">postgresql</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/kafka">kafka</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/azure">azure</a></li>
+								
+							</ul>
+					</nav>
+				
+			
+		</div>
+		</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> © Copyright notice |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54762029-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>
