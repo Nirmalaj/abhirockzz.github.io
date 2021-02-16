@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Grafana on Abhishek&#39;s dev blog</title>
-    <link>/blog/tags/grafana/</link>
+    <link>https://abhirockzz.github.io/blog/tags/grafana/</link>
     <description>Recent content in Grafana on Abhishek&#39;s dev blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Copyright notice</copyright>
-    <lastBuildDate>Fri, 12 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="/blog/tags/grafana/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 12 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/blog/tags/grafana/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>An easy to use monitoring solution for Redis</title>
-      <link>/blog/posts/redis-grafana/</link>
+      <link>https://abhirockzz.github.io/blog/posts/redis-grafana/</link>
       <pubDate>Fri, 12 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>/blog/posts/redis-grafana/</guid>
+      <guid>https://abhirockzz.github.io/blog/posts/redis-grafana/</guid>
       <description>Recently, I discovered a nice way of plugging in monitoring for Redis using Grafana, thanks to this great Data Source plugin that works with any Redis database, including Azure Cache for Redis!</description>
     </item>
     
