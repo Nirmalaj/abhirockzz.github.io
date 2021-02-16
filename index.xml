@@ -14,9 +14,11 @@
       <pubDate>Tue, 16 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://abhirockzz.github.io/abhirockzz.github.io/talks/</guid>
-      <description>Here are some of the talks I have delivered:
-Streaming Solutions for Real Time Problems at Java One
-  Cloud Native DevOps for Node.</description>
+      <description>Change Data Capture, Streaming Audio podcast (with Tim Berglund)
+https://developer.confluent.io/podcast/change-data-capture-and-kafka-connect-on-microsoft-azure-ft-abhishek-gupta
+Picking the Right Distributed Database
+https://channel9.msdn.com/Events/MS-Create/Data/Picking-the-Right-Distributed-Database
+Near Real Time Analytics with Azure Synapse Link for Azure Cosmos DB.</description>
     </item>
     
     <item>
