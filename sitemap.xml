@@ -3,277 +3,277 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/talks/</loc>
+    <loc>/blog/talks/</loc>
     <lastmod>2021-02-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/</loc>
+    <loc>/blog/</loc>
     <lastmod>2021-02-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/redis-grafana/</loc>
+    <loc>/blog/posts/redis-grafana/</loc>
     <lastmod>2021-02-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/azure/</loc>
+    <loc>/blog/tags/azure/</loc>
     <lastmod>2021-02-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/grafana/</loc>
+    <loc>/blog/tags/grafana/</loc>
     <lastmod>2021-02-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/nosql/</loc>
+    <loc>/blog/tags/nosql/</loc>
     <lastmod>2021-02-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/</loc>
+    <loc>/blog/posts/</loc>
     <lastmod>2021-02-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/redis/</loc>
+    <loc>/blog/tags/redis/</loc>
     <lastmod>2021-02-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/</loc>
+    <loc>/blog/tags/</loc>
     <lastmod>2021-02-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/rust-redis-getting-started/</loc>
+    <loc>/blog/posts/rust-redis-getting-started/</loc>
     <lastmod>2021-01-20T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/rust/</loc>
+    <loc>/blog/tags/rust/</loc>
     <lastmod>2021-01-20T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/postgres-kafka-cassandra/</loc>
+    <loc>/blog/posts/postgres-kafka-cassandra/</loc>
     <lastmod>2021-01-18T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/kafka-cassandra-ingestion/</loc>
+    <loc>/blog/posts/kafka-cassandra-ingestion/</loc>
     <lastmod>2020-12-17T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/golang-serverless-backend/</loc>
+    <loc>/blog/posts/golang-serverless-backend/</loc>
     <lastmod>2020-12-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/create-data/</loc>
+    <loc>/blog/posts/create-data/</loc>
     <lastmod>2020-11-27T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/postgres-azure-data-explorer-cdc/</loc>
+    <loc>/blog/posts/postgres-azure-data-explorer-cdc/</loc>
     <lastmod>2020-11-02T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/kafka-azure-data-explorer-kubernetes/</loc>
+    <loc>/blog/posts/kafka-azure-data-explorer-kubernetes/</loc>
     <lastmod>2020-09-25T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/cosmosdb-fault-tolerant-apps/</loc>
+    <loc>/blog/posts/cosmosdb-fault-tolerant-apps/</loc>
     <lastmod>2020-09-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/azure-stream-analytics-tutorial/</loc>
+    <loc>/blog/posts/azure-stream-analytics-tutorial/</loc>
     <lastmod>2020-08-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/kafka-azure-data-explorer/</loc>
+    <loc>/blog/posts/kafka-azure-data-explorer/</loc>
     <lastmod>2020-08-21T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/kafka/</loc>
+    <loc>/blog/tags/kafka/</loc>
     <lastmod>2020-08-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/postgresql/</loc>
+    <loc>/blog/tags/postgresql/</loc>
     <lastmod>2020-08-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/postgres-debezium-pgoutput/</loc>
+    <loc>/blog/posts/postgres-debezium-pgoutput/</loc>
     <lastmod>2020-08-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/azure-data-explorer/</loc>
+    <loc>/blog/tags/azure-data-explorer/</loc>
     <lastmod>2020-07-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/big-data/</loc>
+    <loc>/blog/tags/big-data/</loc>
     <lastmod>2020-07-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/golang/</loc>
+    <loc>/blog/tags/golang/</loc>
     <lastmod>2020-07-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/golang-azure-data-explorer-manage/</loc>
+    <loc>/blog/posts/golang-azure-data-explorer-manage/</loc>
     <lastmod>2020-07-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/kafka-kubernetes-strimzi-4/</loc>
+    <loc>/blog/posts/kafka-kubernetes-strimzi-4/</loc>
     <lastmod>2020-07-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/kubernetes/</loc>
+    <loc>/blog/tags/kubernetes/</loc>
     <lastmod>2020-07-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/strimzi/</loc>
+    <loc>/blog/tags/strimzi/</loc>
     <lastmod>2020-07-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/golang-azure-data-explorer-getting-started/</loc>
+    <loc>/blog/posts/golang-azure-data-explorer-getting-started/</loc>
     <lastmod>2020-07-22T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/azure-event-hubs/</loc>
+    <loc>/blog/tags/azure-event-hubs/</loc>
     <lastmod>2020-07-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/manage-eventhubs-kubernetes/</loc>
+    <loc>/blog/posts/manage-eventhubs-kubernetes/</loc>
     <lastmod>2020-07-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/kafka-kubernetes-strimzi-3/</loc>
+    <loc>/blog/posts/kafka-kubernetes-strimzi-3/</loc>
     <lastmod>2020-07-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/postgres-kafka-debezium-azure-cdc/</loc>
+    <loc>/blog/posts/postgres-kafka-debezium-azure-cdc/</loc>
     <lastmod>2020-07-02T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/debezium/</loc>
+    <loc>/blog/tags/debezium/</loc>
     <lastmod>2020-07-02T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/eventhubs-rbac/</loc>
+    <loc>/blog/posts/eventhubs-rbac/</loc>
     <lastmod>2020-06-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/rbac/</loc>
+    <loc>/blog/tags/rbac/</loc>
     <lastmod>2020-06-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/security/</loc>
+    <loc>/blog/tags/security/</loc>
     <lastmod>2020-06-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/kafka-kubernetes-strimzi-2/</loc>
+    <loc>/blog/posts/kafka-kubernetes-strimzi-2/</loc>
     <lastmod>2020-06-17T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/kafka-kubernetes-strimzi-1/</loc>
+    <loc>/blog/posts/kafka-kubernetes-strimzi-1/</loc>
     <lastmod>2020-06-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/azure-redis-tls-tip/</loc>
+    <loc>/blog/posts/azure-redis-tls-tip/</loc>
     <lastmod>2020-06-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/mongodb-kafka-kubernetes/</loc>
+    <loc>/blog/posts/mongodb-kafka-kubernetes/</loc>
     <lastmod>2020-05-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/mongodb/</loc>
+    <loc>/blog/tags/mongodb/</loc>
     <lastmod>2020-05-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/announcement/</loc>
+    <loc>/blog/tags/announcement/</loc>
     <lastmod>2019-08-26T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/joined-microsoft/</loc>
+    <loc>/blog/posts/joined-microsoft/</loc>
     <lastmod>2019-08-26T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/about/</loc>
+    <loc>/blog/about/</loc>
     <lastmod>2019-08-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/books/</loc>
+    <loc>/blog/books/</loc>
     <lastmod>2019-08-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/kubernetes-services-ngrok/</loc>
+    <loc>/blog/posts/kubernetes-services-ngrok/</loc>
     <lastmod>2019-04-11T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/conferences/</loc>
+    <loc>/blog/tags/conferences/</loc>
     <lastmod>2019-03-29T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/serverless/</loc>
+    <loc>/blog/tags/serverless/</loc>
     <lastmod>2019-03-29T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/serverless-talk-oracle-code/</loc>
+    <loc>/blog/posts/serverless-talk-oracle-code/</loc>
     <lastmod>2019-03-29T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/machine-learning/</loc>
+    <loc>/blog/tags/machine-learning/</loc>
     <lastmod>2019-01-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/serverless-tensorflow-image-classification/</loc>
+    <loc>/blog/posts/serverless-tensorflow-image-classification/</loc>
     <lastmod>2019-01-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/tensorflow/</loc>
+    <loc>/blog/tags/tensorflow/</loc>
     <lastmod>2019-01-07T00:00:00+00:00</lastmod>
   </url>
   
