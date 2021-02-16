@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>An easy to use monitoring solution for Redis - Abhishek&#39;s blog - work in progress</title><link rel="icon" type="image/png" href=icons/myicon.png /><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="An easy to use monitoring solution for Redis" />
+<meta property="og:description" content="Using Redis Data Source for Grafana" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://abhirockzz.github.io/abhirockzz.github.io/posts/redis-grafana/" />
+<meta property="article:published_time" content="2021-02-12T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-02-12T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="An easy to use monitoring solution for Redis"/>
+<meta name="twitter:description" content="Using Redis Data Source for Grafana"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://abhirockzz.github.io/abhirockzz.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://abhirockzz.github.io/abhirockzz.github.io/css/main.css" />
+	<link rel="stylesheet" type="text/css" href="https://abhirockzz.github.io/abhirockzz.github.io/css/custom.css" />
+	<link rel="stylesheet" type="text/css" href="https://abhirockzz.github.io/abhirockzz.github.io/css/dark.css" media="(prefers-color-scheme: dark)" />
+	<link rel="stylesheet" type="text/css" href="https://abhirockzz.github.io/abhirockzz.github.io/css/custom-dark.css" media="(prefers-color-scheme: dark)" />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://abhirockzz.github.io/abhirockzz.github.io/js/main.js"></script>
+	<script src="https://abhirockzz.github.io/abhirockzz.github.io/js/abc.js"></script>
+	<script src="https://abhirockzz.github.io/abhirockzz.github.io/js/xyz.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="https://abhirockzz.github.io/abhirockzz.github.io/">
+	<h1 class="site-title"><a href="https://abhirockzz.github.io/abhirockzz.github.io/">Abhishek&#39;s blog - work in progress</a></h1>
+	<div class="site-description"><h2>Mostly about Kafka, Databases, Kubernetes and other open source topics</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/abhirockzz/" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/abhi_tweeter" title="Twitter"><i data-feather="twitter"></i></a><a href="https://www.linkedin.com/in/abhirockzz/" title="LinkedIn"><i data-feather="linkedin"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/abhirockzz.github.io/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/abhirockzz.github.io/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/abhirockzz.github.io/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/abhirockzz.github.io/books">Books</a>
+			</li>
+			
+			<li>
+				<a href="/abhirockzz.github.io/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">An easy to use monitoring solution for Redis</h1>
+			<div class="meta">Posted at &mdash; Feb 12, 2021</div>
+		</div>
+
+		<div class="markdown">
+			<p>Recently, I discovered a nice way of plugging in monitoring for Redis using <a href="https://grafana.com/">Grafana</a>, thanks to this great <a href="https://github.com/RedisGrafana/grafana-redis-datasource">Data Source plugin</a> that works with any Redis database, including <a href="https://docs.microsoft.com/azure/azure-cache-for-redis/cache-overview?WT.mc_id=data-16116-abhishgu">Azure Cache for Redis</a>!</p>
+<h3 id="its-really-easy-to-setup-and-try">It&rsquo;s really easy to setup and try</h3>
+<p>Setup an <a href="https://docs.microsoft.com/azure/azure-cache-for-redis/quickstart-create-redis?WT.mc_id=data-16116-abhishgu">Azure Cache for Redis instance</a></p>
+<p>Start Grafana in Docker:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker run -d -p 3000:3000 --name<span style="color:#719e07">=</span>grafana -e <span style="color:#2aa198">&#34;GF_INSTALL_PLUGINS=redis-datasource&#34;</span> grafana/grafana
+</code></pre></div><p>Access Grafana dashboard - browse to <code>http://localhost:3000/</code></p>
+<blockquote>
+<p>Enter <code>admin</code> as the username and password</p>
+</blockquote>
+<p>Add the Data Source</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/qhrwhsh844j3d3fr6dx3.png" alt="Alt Text"></p>
+<p>Choose <strong>Redis</strong></p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/o315rs7rg8bej6xzbwyy.png" alt="Alt Text"></p>
+<p>Enter the host and access key for the Azure Cache for Redis instance.</p>
+<blockquote>
+<p>Make sure you enable <strong>TLS</strong></p>
+</blockquote>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/lrhax7ishowx1667jvpw.png" alt="Alt Text"></p>
+<p>All set! You can now run queries from the <strong>Explore</strong> section.</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/lmh7xmv7zj6tlutsuyao.png" alt="Alt Text"></p>
+<p>This is just an example of the <a href="https://redis.io/commands/info">INFO command</a> to retrieve basic Server info.</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/61lz6wfrlwq9qtowip4l.png" alt="Alt Text"></p>
+<h3 id="thats-not-all">That&rsquo;s not all</h3>
+<p>There is a nice dashboard which comes with the Data Source - <a href="https://grafana.com/grafana/dashboards/12776">https://grafana.com/grafana/dashboards/12776</a>.</p>
+<p>To import it, just go to the <strong>Dashboards</strong> section of the Data Source.</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/hojfut28xf5hecv8sqxf.png" alt="Alt Text"></p>
+<p>To see it in action, first navigate to <strong>Dashboards</strong> and choose Redis</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/e4z8k8lderz4zadykpbr.png" alt="Alt Text"></p>
+<p>.. and here it is.</p>
+<p><img src="https://dev-to-uploads.s3.amazonaws.com/i/ajpdhv76gtilezs9t1hd.png" alt="Alt Text"></p>
+<h3 id="this-is-just-the-beginning">This is just the beginning&hellip;</h3>
+<p>I am not a Grafana expert, but pretty sure there is lots more to explore. I will try playing around with custom dashboards and other supported Redis Data structures such as Streams etc.</p>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+					<nav class="nav tags">
+							<ul class="flat">
+								
+								<li><a href="/abhirockzz.github.io/tags/redis">Redis</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/grafana">Grafana</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/azure">Azure</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/nosql">NoSQL</a></li>
+								
+							</ul>
+					</nav>
+				
+			
+		</div>
+		</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> © Copyright notice |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54762029-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>
