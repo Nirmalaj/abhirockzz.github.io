@@ -2,72 +2,72 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>azure on Abhishek&#39;s blog - work in progress</title>
-    <link>/tags/azure/</link>
+    <link>./tags/azure/</link>
     <description>Recent content in azure on Abhishek&#39;s blog - work in progress</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Copyright notice</copyright>
-    <lastBuildDate>Wed, 20 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/azure/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 20 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="./tags/azure/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Getting started with Rust and Redis</title>
-      <link>/posts/rust-redis-getting-started/</link>
+      <link>./posts/rust-redis-getting-started/</link>
       <pubDate>Wed, 20 Jan 2021 00:00:00 +0000</pubDate>
       
-      <guid>/posts/rust-redis-getting-started/</guid>
+      <guid>./posts/rust-redis-getting-started/</guid>
       <description>Are you learning Rust and looking for ways to get some hands-on practice with concrete examples? A good approach might be to try and integrate Rust with external systems.</description>
     </item>
     
     <item>
       <title>PostgreSQL pgoutput plugin for change data capture</title>
-      <link>/posts/postgres-debezium-pgoutput/</link>
+      <link>./posts/postgres-debezium-pgoutput/</link>
       <pubDate>Thu, 13 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>/posts/postgres-debezium-pgoutput/</guid>
+      <guid>./posts/postgres-debezium-pgoutput/</guid>
       <description>Set up a Change Data Capture architecture on Azure using Debezium, Postgres and Kafka was a tutorial on how to use Debezium for change data capture from Azure PostgreSQL and send them to Azure Event Hubs for Kafka - it used the wal2json output plugin.</description>
     </item>
     
     <item>
       <title>How to use Azure Go SDK to manage Azure Data Explorer clusters</title>
-      <link>/posts/golang-azure-data-explorer-manage/</link>
+      <link>./posts/golang-azure-data-explorer-manage/</link>
       <pubDate>Thu, 30 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>/posts/golang-azure-data-explorer-manage/</guid>
+      <guid>./posts/golang-azure-data-explorer-manage/</guid>
       <description>Getting started with Azure Data Explorer using the Go SDK covered how to use the Azure Data Explorer Go SDK to ingest and query data from azure data explorer to ingest and query data.</description>
     </item>
     
     <item>
       <title>Tutorial: Getting started with Azure Data Explorer using the Go SDK</title>
-      <link>/posts/golang-azure-data-explorer-getting-started/</link>
+      <link>./posts/golang-azure-data-explorer-getting-started/</link>
       <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>/posts/golang-azure-data-explorer-getting-started/</guid>
+      <guid>./posts/golang-azure-data-explorer-getting-started/</guid>
       <description>With the help of an example, this blog post will walk you through how to use the Azure Data explorer Go SDK to ingest data from a Azure Blob storage container and query it programmatically using the SDK.</description>
     </item>
     
     <item>
       <title>Change Data Capture architecture using Debezium, Postgres and Kafka</title>
-      <link>/posts/postgres-kafka-debezium-azure-cdc/</link>
+      <link>./posts/postgres-kafka-debezium-azure-cdc/</link>
       <pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>/posts/postgres-kafka-debezium-azure-cdc/</guid>
+      <guid>./posts/postgres-kafka-debezium-azure-cdc/</guid>
       <description>Change Data Capture (CDC) is a technique used to track row-level changes in database tables in response to create, update and delete operations.</description>
     </item>
     
     <item>
       <title>Azure Event Hubs &#39;Role Based Access Control&#39; in action</title>
-      <link>/posts/eventhubs-rbac/</link>
+      <link>./posts/eventhubs-rbac/</link>
       <pubDate>Wed, 24 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>/posts/eventhubs-rbac/</guid>
+      <guid>./posts/eventhubs-rbac/</guid>
       <description>Azure Event Hubs is streaming platform and event ingestion service that can receive and process millions of events per second. In this blog, we are going to cover one of the security aspects related to Azure Event Hubs.</description>
     </item>
     
     <item>
       <title>Tip: Using the latest TLS version with Azure Cache for Redis</title>
-      <link>/posts/azure-redis-tls-tip/</link>
+      <link>./posts/azure-redis-tls-tip/</link>
       <pubDate>Mon, 01 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>/posts/azure-redis-tls-tip/</guid>
+      <guid>./posts/azure-redis-tls-tip/</guid>
       <description>Azure Cache for Redis provides an in-memory data store based on the open-source software Redis.
 As a part of the industry-wide push toward the exclusive use of Transport Layer Security (TLS) version 1.</description>
     </item>
