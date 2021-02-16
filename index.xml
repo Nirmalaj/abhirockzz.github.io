@@ -9,6 +9,17 @@
     <copyright>© Copyright notice</copyright>
     <lastBuildDate>Fri, 12 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Some of my talks</title>
+      <link>https://abhirockzz.github.io/abhirockzz.github.io/talks/</link>
+      <pubDate>Tue, 16 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/abhirockzz.github.io/talks/</guid>
+      <description>Here are some of the talks I have delivered:
+Streaming Solutions for Real Time Problems at Java One
+  Cloud Native DevOps for Node.</description>
+    </item>
+    
+    <item>
       <title>An easy to use monitoring solution for Redis</title>
       <link>https://abhirockzz.github.io/abhirockzz.github.io/posts/redis-grafana/</link>
       <pubDate>Fri, 12 Feb 2021 00:00:00 +0000</pubDate>
@@ -234,8 +245,7 @@ I was fortunate to have worked on developer platforms (PaaS and Serverless) duri
       <pubDate>Mon, 12 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://abhirockzz.github.io/abhirockzz.github.io/about/</guid>
-      <description>I mostly work with Kafka, Databases, Kubernetes and related open source projects.
-Currently working as a Developer Advocate at Microsoft - https://developer.</description>
+      <description>I mostly work with Kafka, Databases, Kubernetes and related open source projects. Currently Senior Developer Advocate at Microsoft. Also, Confluent Community Catalyst.</description>
     </item>
     
     <item>
