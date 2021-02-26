@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>go on Foo Bar Baz</title>
+    <link>https://abhirockzz.github.io/tags/go/</link>
+    <description>Recent content in go on Foo Bar Baz</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>© Abhishek Gupta, 2021</copyright>
+    <lastBuildDate>Thu, 10 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Build fault tolerant applications with Cassandra API for Azure Cosmos DB</title>
+      <link>https://abhirockzz.github.io/posts/cosmosdb-fault-tolerant-apps/</link>
+      <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/posts/cosmosdb-fault-tolerant-apps/</guid>
+      <description>Azure Cosmos DB is a resource governed system that allows you to execute a certain number of operations per second based on the provisioned throughput you have configured.</description>
+    </item>
+    
+  </channel>
+</rss>

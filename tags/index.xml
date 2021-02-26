@@ -8,7 +8,16 @@
     <copyright>© Abhishek Gupta, 2021</copyright>
     <lastBuildDate>Wed, 24 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Cassandra</title>
+      <title>azure cosmos db</title>
+      <link>https://abhirockzz.github.io/tags/azure-cosmos-db/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/tags/azure-cosmos-db/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cassandra</title>
       <link>https://abhirockzz.github.io/tags/cassandra/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
@@ -17,7 +26,7 @@
     </item>
     
     <item>
-      <title>Database</title>
+      <title>database</title>
       <link>https://abhirockzz.github.io/tags/database/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
@@ -26,7 +35,7 @@
     </item>
     
     <item>
-      <title>MongoDB</title>
+      <title>mongodb</title>
       <link>https://abhirockzz.github.io/tags/mongodb/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
@@ -35,7 +44,7 @@
     </item>
     
     <item>
-      <title>NoSQL</title>
+      <title>nosql</title>
       <link>https://abhirockzz.github.io/tags/nosql/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
@@ -80,20 +89,20 @@
     </item>
     
     <item>
+      <title>go</title>
+      <link>https://abhirockzz.github.io/tags/go/</link>
+      <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/tags/go/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>analytics</title>
       <link>https://abhirockzz.github.io/tags/analytics/</link>
       <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>https://abhirockzz.github.io/tags/analytics/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>azure cosmos db</title>
-      <link>https://abhirockzz.github.io/tags/azure-cosmos-db/</link>
-      <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://abhirockzz.github.io/tags/azure-cosmos-db/</guid>
       <description></description>
     </item>
     

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>NoSQL on Foo Bar Baz</title>
+    <title>nosql on Foo Bar Baz</title>
     <link>https://abhirockzz.github.io/tags/nosql/</link>
-    <description>Recent content in NoSQL on Foo Bar Baz</description>
+    <description>Recent content in nosql on Foo Bar Baz</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>© Abhishek Gupta, 2021</copyright>
     <lastBuildDate>Wed, 24 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/tags/nosql/index.xml" rel="self" type="application/rss+xml" />
@@ -32,6 +32,15 @@
       
       <guid>https://abhirockzz.github.io/posts/rust-redis-getting-started/</guid>
       <description>Are you learning Rust and looking for ways to get some hands-on practice with concrete examples? A good approach might be to try and integrate Rust with external systems.</description>
+    </item>
+    
+    <item>
+      <title>Build fault tolerant applications with Cassandra API for Azure Cosmos DB</title>
+      <link>https://abhirockzz.github.io/posts/cosmosdb-fault-tolerant-apps/</link>
+      <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/posts/cosmosdb-fault-tolerant-apps/</guid>
+      <description>Azure Cosmos DB is a resource governed system that allows you to execute a certain number of operations per second based on the provisioned throughput you have configured.</description>
     </item>
     
     <item>
