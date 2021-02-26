@@ -2,224 +2,251 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Foo Bar Baz</title>
-    <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/</link>
+    <link>https://abhirockzz.github.io/tags/</link>
     <description>Recent content in Tags on Foo Bar Baz</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>© Abhishek Gupta, 2021</copyright>
-    <lastBuildDate>Wed, 24 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Cassandra</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/cassandra/</link>
+      <link>https://abhirockzz.github.io/tags/cassandra/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/cassandra/</guid>
+      <guid>https://abhirockzz.github.io/tags/cassandra/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Database</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/database/</link>
+      <link>https://abhirockzz.github.io/tags/database/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/database/</guid>
+      <guid>https://abhirockzz.github.io/tags/database/</guid>
       <description></description>
     </item>
     
     <item>
       <title>MongoDB</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/mongodb/</link>
+      <link>https://abhirockzz.github.io/tags/mongodb/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/mongodb/</guid>
+      <guid>https://abhirockzz.github.io/tags/mongodb/</guid>
       <description></description>
     </item>
     
     <item>
       <title>NoSQL</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/nosql/</link>
+      <link>https://abhirockzz.github.io/tags/nosql/</link>
       <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/nosql/</guid>
+      <guid>https://abhirockzz.github.io/tags/nosql/</guid>
       <description></description>
     </item>
     
     <item>
       <title>azure</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/azure/</link>
+      <link>https://abhirockzz.github.io/tags/azure/</link>
       <pubDate>Fri, 12 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/azure/</guid>
+      <guid>https://abhirockzz.github.io/tags/azure/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Grafana</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/grafana/</link>
+      <link>https://abhirockzz.github.io/tags/grafana/</link>
       <pubDate>Fri, 12 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/grafana/</guid>
+      <guid>https://abhirockzz.github.io/tags/grafana/</guid>
       <description></description>
     </item>
     
     <item>
       <title>redis</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/redis/</link>
+      <link>https://abhirockzz.github.io/tags/redis/</link>
       <pubDate>Fri, 12 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/redis/</guid>
+      <guid>https://abhirockzz.github.io/tags/redis/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Rust</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/rust/</link>
+      <link>https://abhirockzz.github.io/tags/rust/</link>
       <pubDate>Wed, 20 Jan 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/rust/</guid>
+      <guid>https://abhirockzz.github.io/tags/rust/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>kafka</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/kafka/</link>
-      <pubDate>Thu, 13 Aug 2020 00:00:00 +0000</pubDate>
+      <title>analytics</title>
+      <link>https://abhirockzz.github.io/tags/analytics/</link>
+      <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/kafka/</guid>
+      <guid>https://abhirockzz.github.io/tags/analytics/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>postgresql</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/postgresql/</link>
-      <pubDate>Thu, 13 Aug 2020 00:00:00 +0000</pubDate>
+      <title>azure cosmos db</title>
+      <link>https://abhirockzz.github.io/tags/azure-cosmos-db/</link>
+      <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/postgresql/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>azure data explorer</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/azure-data-explorer/</link>
-      <pubDate>Thu, 30 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/azure-data-explorer/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>big data</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/big-data/</link>
-      <pubDate>Thu, 30 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/big-data/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>golang</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/golang/</link>
-      <pubDate>Thu, 30 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/golang/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>kubernetes</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/kubernetes/</link>
-      <pubDate>Tue, 28 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/kubernetes/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>strimzi</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/strimzi/</link>
-      <pubDate>Tue, 28 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/strimzi/</guid>
+      <guid>https://abhirockzz.github.io/tags/azure-cosmos-db/</guid>
       <description></description>
     </item>
     
     <item>
       <title>azure event hubs</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/azure-event-hubs/</link>
-      <pubDate>Mon, 13 Jul 2020 00:00:00 +0000</pubDate>
+      <link>https://abhirockzz.github.io/tags/azure-event-hubs/</link>
+      <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/azure-event-hubs/</guid>
+      <guid>https://abhirockzz.github.io/tags/azure-event-hubs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sql server</title>
+      <link>https://abhirockzz.github.io/tags/sql-server/</link>
+      <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/tags/sql-server/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kafka</title>
+      <link>https://abhirockzz.github.io/tags/kafka/</link>
+      <pubDate>Thu, 13 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/tags/kafka/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>postgresql</title>
+      <link>https://abhirockzz.github.io/tags/postgresql/</link>
+      <pubDate>Thu, 13 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/tags/postgresql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>azure data explorer</title>
+      <link>https://abhirockzz.github.io/tags/azure-data-explorer/</link>
+      <pubDate>Thu, 30 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/tags/azure-data-explorer/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>big data</title>
+      <link>https://abhirockzz.github.io/tags/big-data/</link>
+      <pubDate>Thu, 30 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/tags/big-data/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>golang</title>
+      <link>https://abhirockzz.github.io/tags/golang/</link>
+      <pubDate>Thu, 30 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubernetes</title>
+      <link>https://abhirockzz.github.io/tags/kubernetes/</link>
+      <pubDate>Tue, 28 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>strimzi</title>
+      <link>https://abhirockzz.github.io/tags/strimzi/</link>
+      <pubDate>Tue, 28 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/tags/strimzi/</guid>
       <description></description>
     </item>
     
     <item>
       <title>debezium</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/debezium/</link>
+      <link>https://abhirockzz.github.io/tags/debezium/</link>
       <pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/debezium/</guid>
+      <guid>https://abhirockzz.github.io/tags/debezium/</guid>
       <description></description>
     </item>
     
     <item>
       <title>rbac</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/rbac/</link>
+      <link>https://abhirockzz.github.io/tags/rbac/</link>
       <pubDate>Wed, 24 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/rbac/</guid>
+      <guid>https://abhirockzz.github.io/tags/rbac/</guid>
       <description></description>
     </item>
     
     <item>
       <title>security</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/security/</link>
+      <link>https://abhirockzz.github.io/tags/security/</link>
       <pubDate>Wed, 24 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/security/</guid>
+      <guid>https://abhirockzz.github.io/tags/security/</guid>
       <description></description>
     </item>
     
     <item>
       <title>announcement</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/announcement/</link>
+      <link>https://abhirockzz.github.io/tags/announcement/</link>
       <pubDate>Mon, 26 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/announcement/</guid>
+      <guid>https://abhirockzz.github.io/tags/announcement/</guid>
       <description></description>
     </item>
     
     <item>
       <title>conferences</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/conferences/</link>
+      <link>https://abhirockzz.github.io/tags/conferences/</link>
       <pubDate>Fri, 29 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/conferences/</guid>
+      <guid>https://abhirockzz.github.io/tags/conferences/</guid>
       <description></description>
     </item>
     
     <item>
       <title>serverless</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/serverless/</link>
+      <link>https://abhirockzz.github.io/tags/serverless/</link>
       <pubDate>Fri, 29 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/serverless/</guid>
+      <guid>https://abhirockzz.github.io/tags/serverless/</guid>
       <description></description>
     </item>
     
     <item>
       <title>machine learning</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/machine-learning/</link>
+      <link>https://abhirockzz.github.io/tags/machine-learning/</link>
       <pubDate>Mon, 07 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/machine-learning/</guid>
+      <guid>https://abhirockzz.github.io/tags/machine-learning/</guid>
       <description></description>
     </item>
     
     <item>
       <title>tensorflow</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/tensorflow/</link>
+      <link>https://abhirockzz.github.io/tags/tensorflow/</link>
       <pubDate>Mon, 07 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/tensorflow/</guid>
+      <guid>https://abhirockzz.github.io/tags/tensorflow/</guid>
       <description></description>
     </item>
     
