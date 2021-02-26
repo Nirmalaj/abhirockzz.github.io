@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>nosql on Abhishek&#39;s dev blog</title>
+    <title>NoSQL on Abhishek&#39;s dev blog</title>
     <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/nosql/</link>
-    <description>Recent content in nosql on Abhishek&#39;s dev blog</description>
+    <description>Recent content in NoSQL on Abhishek&#39;s dev blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Abhishek Gupta, 2021</copyright>
-    <lastBuildDate>Fri, 12 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/tags/nosql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/tags/nosql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Azure Cosmos DB: Use Cases and Trade-Offs</title>
+      <link>https://abhirockzz.github.io/abhirockzz.github.io/posts/azure-cosmosdb-use-cases-tradeoffs/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/abhirockzz.github.io/posts/azure-cosmosdb-use-cases-tradeoffs/</guid>
+      <description>Azure Cosmos DB is a fully managed, elastically scalable and globally distributed database with a multi-model approach, and provides you with the ability to use document, key-value, wide-column, or graph-based data.</description>
+    </item>
+    
     <item>
       <title>An easy to use monitoring solution for Redis</title>
       <link>https://abhirockzz.github.io/abhirockzz.github.io/posts/redis-grafana/</link>

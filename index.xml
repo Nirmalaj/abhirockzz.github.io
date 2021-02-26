@@ -7,13 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Abhishek Gupta, 2021</copyright>
-    <lastBuildDate>Fri, 12 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Some of my talks</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/talks/</link>
+      <title>Azure Cosmos DB: Use Cases and Trade-Offs</title>
+      <link>https://abhirockzz.github.io/abhirockzz.github.io/posts/azure-cosmosdb-use-cases-tradeoffs/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/abhirockzz.github.io/posts/azure-cosmosdb-use-cases-tradeoffs/</guid>
+      <description>Azure Cosmos DB is a fully managed, elastically scalable and globally distributed database with a multi-model approach, and provides you with the ability to use document, key-value, wide-column, or graph-based data.</description>
+    </item>
+    
+    <item>
+      <title>Some of my presentations</title>
+      <link>https://abhirockzz.github.io/abhirockzz.github.io/presentations/</link>
       <pubDate>Tue, 16 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/talks/</guid>
+      <guid>https://abhirockzz.github.io/abhirockzz.github.io/presentations/</guid>
       <description>Change Data Capture, Streaming Audio podcast (with Tim Berglund)
 https://developer.confluent.io/podcast/change-data-capture-and-kafka-connect-on-microsoft-azure-ft-abhishek-gupta
 Picking the Right Distributed Database

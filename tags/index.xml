@@ -7,7 +7,43 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Abhishek Gupta, 2021</copyright>
-    <lastBuildDate>Fri, 12 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cassandra</title>
+      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/cassandra/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/cassandra/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Database</title>
+      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/database/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/database/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MongoDB</title>
+      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/mongodb/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/mongodb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>NoSQL</title>
+      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/nosql/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/nosql/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>azure</title>
       <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/azure/</link>
@@ -23,15 +59,6 @@
       <pubDate>Fri, 12 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/grafana/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>nosql</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/nosql/</link>
-      <pubDate>Fri, 12 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/nosql/</guid>
       <description></description>
     </item>
     
@@ -149,15 +176,6 @@
       <pubDate>Wed, 24 Jun 2020 00:00:00 +0000</pubDate>
       
       <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/security/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>mongodb</title>
-      <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/mongodb/</link>
-      <pubDate>Tue, 12 May 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://abhirockzz.github.io/abhirockzz.github.io/tags/mongodb/</guid>
       <description></description>
     </item>
     

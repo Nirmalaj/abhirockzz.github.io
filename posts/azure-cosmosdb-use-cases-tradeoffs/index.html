@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Azure Cosmos DB: Use Cases and Trade-Offs - Abhishek&#39;s dev blog</title><link rel="icon" type="image/png" href=icons/myicon.png /><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Azure Cosmos DB: Use Cases and Trade-Offs" />
+<meta property="og:description" content="How do you pick the right data model in Azure Cosmos DB? SQL, MongoDB, Cassandra, Graph or Table?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://abhirockzz.github.io/abhirockzz.github.io/posts/azure-cosmosdb-use-cases-tradeoffs/" />
+<meta property="article:published_time" content="2021-02-24T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-02-24T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Azure Cosmos DB: Use Cases and Trade-Offs"/>
+<meta name="twitter:description" content="How do you pick the right data model in Azure Cosmos DB? SQL, MongoDB, Cassandra, Graph or Table?"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://abhirockzz.github.io/abhirockzz.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://abhirockzz.github.io/abhirockzz.github.io/css/main.css" />
+	<link rel="stylesheet" type="text/css" href="https://abhirockzz.github.io/abhirockzz.github.io/css/custom.css" />
+	<link rel="stylesheet" type="text/css" href="https://abhirockzz.github.io/abhirockzz.github.io/css/dark.css" media="(prefers-color-scheme: dark)" />
+	<link rel="stylesheet" type="text/css" href="https://abhirockzz.github.io/abhirockzz.github.io/css/custom-dark.css" media="(prefers-color-scheme: dark)" />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://abhirockzz.github.io/abhirockzz.github.io/js/main.js"></script>
+	<script src="https://abhirockzz.github.io/abhirockzz.github.io/js/abc.js"></script>
+	<script src="https://abhirockzz.github.io/abhirockzz.github.io/js/xyz.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="https://abhirockzz.github.io/abhirockzz.github.io/">
+	<h1 class="site-title"><a href="https://abhirockzz.github.io/abhirockzz.github.io/">Abhishek&#39;s dev blog</a></h1>
+	<div class="site-description"><h2>Mostly about Kafka, Databases, Kubernetes and other open source topics</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/abhirockzz/" title="Github"><i data-feather="github"></i></a><a href="https://twitter.com/abhi_tweeter" title="Twitter"><i data-feather="twitter"></i></a><a href="https://www.linkedin.com/in/abhirockzz/" title="LinkedIn"><i data-feather="linkedin"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/abhirockzz.github.io/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/abhirockzz.github.io/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/abhirockzz.github.io/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/abhirockzz.github.io/books">Books</a>
+			</li>
+			
+			<li>
+				<a href="/abhirockzz.github.io/presentations">Presentations</a>
+			</li>
+			
+			<li>
+				<a href="/abhirockzz.github.io/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Azure Cosmos DB: Use Cases and Trade-Offs</h1>
+			<div class="meta">Posted at &mdash; Feb 24, 2021</div>
+		</div>
+
+		<div class="markdown">
+			<p><a href="https://docs.microsoft.com/azure/cosmos-db/introduction?WT.mc_id=data-12713-abhishgu">Azure Cosmos DB</a> is a fully managed, elastically scalable and globally distributed database with a multi-model approach, and provides you with the ability to use document, key-value, wide-column, or graph-based data.</p>
+<p>We will drill further into the multi-model capabilities and explore the options that are available to store and access data. Hopefully, it can help you make an informed decision on the right API are the right choice.</p>
+<ul>
+<li>Core (SQL) API: Flexibility of a NoSQL document store combined with the power of SQL for querying.</li>
+<li><a href="https://docs.microsoft.com/azure/cosmos-db/mongodb-introduction?WT.mc_id=data-12713-abhishgu">MongoDB API</a>: Supports the MongoDB wire protocol so that existing MongoDB client continue to work with Azure Cosmos DB as if they are running against an actual MongoDB database.</li>
+<li><a href="https://docs.microsoft.com/azure/cosmos-db/cassandra-introduction?WT.mc_id=data-12713-abhishgu">Cassandra API</a>: Supports the Cassandra wire protocol so that existing Apache drivers compliant with CQLv4 continue to work with Azure Cosmos DB as if they are running against an actual Cassandra database.</li>
+<li><a href="https://docs.microsoft.com/azure/cosmos-db/graph-introduction?WT.mc_id=data-12713-abhishgu">Gremlin API</a>: Supports graph data with Apache TinkerPop (a graph computing framework) and the Gremlin query language.</li>
+<li><a href="https://docs.microsoft.com/azure/cosmos-db/table-introduction?WT.mc_id=data-12713-abhishgu">Table API</a>: Provides premium capabilities for applications written for Azure Table storage.</li>
+</ul>
+<blockquote>
+<p>You can read further on the some of the <a href="https://docs.microsoft.com/azure/cosmos-db/introduction?WT.mc_id=data-12713-abhishgu#key-benefits">Key Benefits</a></p>
+</blockquote>
+<p>Before diving in, let&rsquo;s look at some of the common scenarios which Azure Cosmos DB is used for. This is by no means, an exhaustive list.</p>
+<p><strong>Modern gaming services</strong> need to deliver customized and personalized content like in-game stats, social media integration, and high-score leaderboards. As a fully managed offering, Azure Cosmos DB requires minimal setup and management to allow for rapid iteration, and reduced time to market.</p>
+<p><img src="https://docs.microsoft.com/en-us/azure/cosmos-db/media/use-cases/gaming.png" alt=""></p>
+<p><strong>E-commerce platforms</strong> and retail applications store catalog data and for event sourcing in order processing pipelines.</p>
+<p><img src="https://docs.microsoft.com/en-us/azure/cosmos-db/media/use-cases/product-catalog.png" alt=""></p>
+<p>Applications that provide personalized experiences can be quiet complex. They need to be able to retrieve user specific settings effectively to render UI elements and experiences quickly.</p>
+<p><img src="https://docs.microsoft.com/en-us/azure/cosmos-db/media/use-cases/personalization.png" alt=""></p>
+<h2 id="which-api-to-use-and-when">Which API to use, and when?</h2>
+<p>There is no perfect formula! At times, the choice will be clear, but other scenarios may require some analysis.</p>
+<p>A rather obvious point to consider is, whether there are existing applications that use any of the supported APIs via the wire protocol (i.e. Cassandra and MongoDB)? If the answer is yes, you should consider using the specific Azure Cosmos DB API, as that will reduce your migration tasks, and make the best use of previous experience in your team.</p>
+<p>If you expect the schema to change a lot, you may want to leverage a document database, making Core (SQL) a good choice (although the MongoDB API should also be considered).</p>
+<p>If your data model consists of relationships between entities with associated metadata, you&rsquo;re better off using the graph support in Azure Cosmos DB Gremlin API.</p>
+<p>If you are currently using <a href="https://docs.microsoft.com/azure/storage/tables/table-storage-overview?WT.mc_id=data-12713-abhishgu">Azure Table Storage</a>, the Core (SQL) API would be a better choice, as it offers a richer query experience, with improved indexing over the Table API. If you don&rsquo;t want to rewrite your application, consider <a href="https://docs.microsoft.com/azure/cosmos-db/table-api-faq?WT.mc_id=data-12713-abhishgu#table-api-vs-table-storage">migrating to the Azure Cosmos DB Table API</a>.</p>
+<p>Let&rsquo;s look each of the APIs and apply some of this.</p>
+<h2 id="core-sql-api-best-of-both-worlds">Core (SQL) API: best of both worlds</h2>
+<p>Core (SQL) API is the default Azure Cosmos DB API. You can store data using <a href="https://docs.microsoft.com/azure/cosmos-db/modeling-data?WT.mc_id=data-12713-abhishgu">JSON documents to represent your data</a>, but there are a couple ways you can retrieve it:</p>
+<ul>
+<li><a href="https://docs.microsoft.com/azure/cosmos-db/sql-query-getting-started?WT.mc_id=data-12713-abhishgu">SQL queries</a>: Write queries using the Structured Query Language (SQL) as a JSON query language</li>
+<li>Point reads: Key/value style lookup on a single item ID and partition key (these are cheaper and faster than SQL queries)</li>
+</ul>
+<p>For many applications, semi-structured data model can provide the flexibility they need. For example, an e-commerce setup with large number of product categories. You will need to add new product categories and support operations (search, sort etc.) across many product attributes. You can model this with a relational database, but, the constantly evolving product categories may require downtime to update the table schemas, queries, and databases.</p>
+<p>With the Core (SQL), introducing a new product category is as simple as adding a document for the new product without schema changes or downtimes. The Azure Cosmos DB MongoDB API is also suitable for these requirements, but Core (SQL) API has an advantage since it&rsquo;s supports SQL-like queries on top of a flexible data model.</p>
+<p>Consider the example of a blogging platform where users can create posts, like and add comments to those posts.</p>
+<p>You can represent a <code>post</code> as such:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#268bd2">&#34;id&#34;</span>: <span style="color:#2aa198">&#34;&lt;post-id&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;type&#34;</span>: <span style="color:#2aa198">&#34;post&#34;</span>,
+    <span style="color:#268bd2">&#34;postId&#34;</span>: <span style="color:#2aa198">&#34;&lt;post-id&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;userId&#34;</span>: <span style="color:#2aa198">&#34;&lt;post-author-id&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;userUsername&#34;</span>: <span style="color:#2aa198">&#34;&lt;post-author-username&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;title&#34;</span>: <span style="color:#2aa198">&#34;&lt;post-title&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;content&#34;</span>: <span style="color:#2aa198">&#34;&lt;post-content&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;commentCount&#34;</span>: &lt;count-of-comments&gt;,
+    <span style="color:#268bd2">&#34;likeCount&#34;</span>: &lt;count-of-likes&gt;,
+    <span style="color:#268bd2">&#34;creationDate&#34;</span>: <span style="color:#2aa198">&#34;&lt;post-creation-date&gt;&#34;</span>
+}
+</code></pre></div><p>As well as <code>comments</code> and <code>likes</code>:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#268bd2">&#34;id&#34;</span>: <span style="color:#2aa198">&#34;&lt;comment-id&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;type&#34;</span>: <span style="color:#2aa198">&#34;comment&#34;</span>,
+    <span style="color:#268bd2">&#34;postId&#34;</span>: <span style="color:#2aa198">&#34;&lt;post-id&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;userId&#34;</span>: <span style="color:#2aa198">&#34;&lt;comment-author-id&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;userUsername&#34;</span>: <span style="color:#2aa198">&#34;&lt;comment-author-username&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;content&#34;</span>: <span style="color:#2aa198">&#34;&lt;comment-content&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;creationDate&#34;</span>: <span style="color:#2aa198">&#34;&lt;comment-creation-date&gt;&#34;</span>
+}
+
+{
+    <span style="color:#268bd2">&#34;id&#34;</span>: <span style="color:#2aa198">&#34;&lt;like-id&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;type&#34;</span>: <span style="color:#2aa198">&#34;like&#34;</span>,
+    <span style="color:#268bd2">&#34;postId&#34;</span>: <span style="color:#2aa198">&#34;&lt;post-id&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;userId&#34;</span>: <span style="color:#2aa198">&#34;&lt;liker-id&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;userUsername&#34;</span>: <span style="color:#2aa198">&#34;&lt;liker-username&gt;&#34;</span>,
+    <span style="color:#268bd2">&#34;creationDate&#34;</span>: <span style="color:#2aa198">&#34;&lt;like-creation-date&gt;&#34;</span>
+}
+</code></pre></div><p>To handle likes and comments, you can use a <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/stored-procedures-triggers-udfs">stored procedure</a>:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#268bd2">function</span> createComment(postId, comment) {
+  <span style="color:#268bd2">var</span> collection <span style="color:#719e07">=</span> getContext().getCollection();
+
+  collection.readDocument(
+    <span style="color:#586e75">`</span><span style="color:#2aa198">${</span>collection.getAltLink()<span style="color:#2aa198">}</span><span style="color:#586e75">/docs/</span><span style="color:#2aa198">${</span>postId<span style="color:#2aa198">}</span><span style="color:#586e75">`</span>,
+    <span style="color:#268bd2">function</span> (err, post) {
+      <span style="color:#719e07">if</span> (err) <span style="color:#719e07">throw</span> err;
+
+      post.commentCount<span style="color:#719e07">++</span>;
+      collection.replaceDocument(
+        post._self,
+        post,
+        <span style="color:#268bd2">function</span> (err) {
+          <span style="color:#719e07">if</span> (err) <span style="color:#719e07">throw</span> err;
+
+          comment.postId <span style="color:#719e07">=</span> postId;
+          collection.createDocument(
+            collection.getSelfLink(),
+            comment
+          );
+        }
+      );
+    })
+}
+</code></pre></div><blockquote>
+<p>If you want to learn more, refer to <a href="https://docs.microsoft.com/azure/cosmos-db/sql-query-working-with-json?WT.mc_id=data-12713-abhishgu">Working with JSON in Azure Cosmos DB</a></p>
+</blockquote>
+<h2 id="migrate-from-an-existing-mongodb-instance">Migrate from an existing MongoDB instance</h2>
+<p>Azure Cosmos DB implements the <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-feature-support-36">wire protocol for MongoDB</a> which allows transparent compatibility with native MongoDB client SDKs, drivers, and tools. This means that any MongoDB client driver (as well as <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-feature-support-36">existing tools such as Studio 3T</a>) that understands this protocol version should be able to natively connect to Cosmos DB.</p>
+<p>For example, if you have an existing MongoDB database as the data store for purchase orders processing application to capture failed and partial orders, fulfillment data, shipping status with different formats. Due to increasing data volumes, you want to migrate to a scalable cloud based solution and continue using MongoDB - It makes perfect sense to use Azure Cosmos DB&rsquo;s API for MongoDB. But you will want to do so with minimal code changes to the existing application and migrate the current data with as little downtime as possible.</p>
+<p>With <a href="https://docs.microsoft.com/azure/dms/tutorial-mongodb-cosmos-db-online?toc=/azure/cosmos-db/toc.json&amp;bc=/azure/cosmos-db/breadcrumb/toc.json&amp;WT.mc_id=data-12713-abhishgu">Azure Database Migration Service</a>, you can perform an <em>online</em> (minimal downtime) migration and elastically scale the provisioned throughput and storage for your Cosmos databases based on your need and pay only for the throughput and storage you need. This leads to significant cost savings.</p>
+<blockquote>
+<p>Refer to the <a href="https://docs.microsoft.com/azure/cosmos-db/mongodb-pre-migration?WT.mc_id=data-12713-abhishgu">pre</a> and <a href="https://docs.microsoft.com/azure/cosmos-db/mongodb-post-migration?WT.mc_id=data-12713-abhishgu">post-migration</a> guides.</p>
+</blockquote>
+<p>Once you&rsquo;ve migrated your data, you can continue to use your existing application. Here is an example using <a href="https://docs.mongodb.com/ecosystem/drivers/csharp/">MongoDB .NET driver</a>:</p>
+<p>Initialize the client:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">MongoClientSettings settings = <span style="color:#719e07">new</span> MongoClientSettings();
+settings.Server = <span style="color:#719e07">new</span> MongoServerAddress(host, <span style="color:#2aa198">10255</span>);
+settings.UseSsl = <span style="color:#719e07">true</span>;
+settings.SslSettings = <span style="color:#719e07">new</span> SslSettings();
+settings.SslSettings.EnabledSslProtocols = SslProtocols.Tls12;
+
+MongoIdentity identity = <span style="color:#719e07">new</span> MongoInternalIdentity(dbName, userName);
+MongoIdentityEvidence evidence = <span style="color:#719e07">new</span> PasswordEvidence(password);
+
+settings.Credential = <span style="color:#719e07">new</span> MongoCredential(<span style="color:#2aa198">&#34;SCRAM-SHA-1&#34;</span>, identity, evidence);
+
+MongoClient client = <span style="color:#719e07">new</span> MongoClient(settings);
+</code></pre></div><p>Retrieve the database and the collection:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#719e07">private</span> <span style="color:#dc322f">string</span> dbName = <span style="color:#2aa198">&#34;Tasks&#34;</span>;
+<span style="color:#719e07">private</span> <span style="color:#dc322f">string</span> collectionName = <span style="color:#2aa198">&#34;TasksList&#34;</span>;
+
+<span style="color:#dc322f">var</span> database = client.GetDatabase(dbName);
+<span style="color:#dc322f">var</span> todoTaskCollection = database.GetCollection&lt;MyTask&gt;(collectionName);
+</code></pre></div><p>Insert a task into the collection:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#719e07">public</span> <span style="color:#719e07">void</span> CreateTask(MyTask task)
+ {
+     <span style="color:#dc322f">var</span> collection = GetTasksCollectionForEdit();
+     <span style="color:#719e07">try</span>
+     {
+         collection.InsertOne(task);
+     }
+     <span style="color:#719e07">catch</span> (MongoCommandException ex)
+     {
+         <span style="color:#dc322f">string</span> msg = ex.Message;
+     }
+ }
+</code></pre></div><p>Retrieve all tasks:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">collection.Find(<span style="color:#719e07">new</span> BsonDocument()).ToList();
+</code></pre></div><p>You should also carefully consider how <a href="https://docs.microsoft.com/azure/cosmos-db/mongodb-consistency?WT.mc_id=data-12713-abhishgu">MongoDB write/read concerns are mapped to the Azure Cosmos consistency levels</a>, <a href="https://docs.microsoft.com/azure/cosmos-db/mongodb-indexing?WT.mc_id=data-12713-abhishgu">manage indexing</a> and leverage <a href="https://docs.microsoft.com/azure/cosmos-db/mongodb-change-streams?tabs=javascript&amp;WT.mc_id=data-12713-abhishgu">Change feed support</a>.</p>
+<p>Please note that the Core (SQL) API would have been an appropriate choice if there wasn&rsquo;t a requirement to reuse existing code and import data from existing MongoDB database.</p>
+<h3 id="handle-real-time-data-with-cassandra">Handle real-time data with Cassandra</h3>
+<p>If your application needs to handle high volume, real-time data, Apache Cassandra is an ideal choice. With Azure Cosmos DB Cassandra API, you can use <a href="https://docs.microsoft.com/azure/cosmos-db/cassandra-support?WT.mc_id=data-12713-abhishgu">existing Apache drivers compliant with CQLv4</a>, and in most cases, you should be able to switch from using Apache Cassandra to using Azure Cosmos DB&rsquo;s Cassandra API, by just changing a connection string. You can also continue to use Cassandra-based tools such as <code>cqlsh</code>.</p>
+<p>For advanced analytics use cases, you should combine <a href="https://docs.microsoft.com/azure/cosmos-db/cassandra-spark-generic?WT.mc_id=data-12713-abhishgu">Azure Cosmos DB Cassandra API with Apache Spark</a>. You can use the familiar <a href="https://mvnrepository.com/artifact/com.datastax.spark/spark-cassandra-connector">Spark connector for Cassandra</a> to connect to Azure Cosmos DB Cassandra API. Additionally, you will also need the <a href="https://search.maven.org/artifact/com.microsoft.azure.cosmosdb/azure-cosmos-cassandra-spark-helper/1.0.0/jar">azure-cosmos-cassandra-spark-helper</a> helper library from Azure Cosmos DB for features such as custom connection factories and retry policies.</p>
+<blockquote>
+<p>It&rsquo;s possible to access Azure Cosmos DB Cassandra API from <a href="https://docs.microsoft.com/azure/cosmos-db/cassandra-spark-databricks?WT.mc_id=data-12713-abhishgu">Azure Databricks</a> as well as <a href="https://docs.microsoft.com/azure/cosmos-db/cassandra-spark-hdinsight?WT.mc_id=data-12713-abhishgu">Spark on YARN with HDInsight</a></p>
+</blockquote>
+<p>To connect to Cosmos DB, you can use the Scala API as such:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-scala" data-lang="scala"><span style="color:#719e07">import</span> org.apache.spark.sql.cassandra._
+<span style="color:#719e07">import</span> com.datastax.spark.connector._
+<span style="color:#719e07">import</span> com.datastax.spark.connector.cql.CassandraConnector
+<span style="color:#719e07">import</span> com.microsoft.azure.cosmosdb.cassandra
+
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.connection.host&#34;</span><span style="color:#719e07">,</span><span style="color:#2aa198">&#34;YOUR_ACCOUNT_NAME.cassandra.cosmosdb.azure.com&#34;</span><span style="color:#719e07">)</span>
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.connection.port&#34;</span><span style="color:#719e07">,</span><span style="color:#2aa198">&#34;10350&#34;</span><span style="color:#719e07">)</span>
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.connection.ssl.enabled&#34;</span><span style="color:#719e07">,</span><span style="color:#2aa198">&#34;true&#34;</span><span style="color:#719e07">)</span>
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.auth.username&#34;</span><span style="color:#719e07">,</span><span style="color:#2aa198">&#34;YOUR_ACCOUNT_NAME&#34;</span><span style="color:#719e07">)</span>
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.auth.password&#34;</span><span style="color:#719e07">,</span><span style="color:#2aa198">&#34;YOUR_ACCOUNT_KEY&#34;</span><span style="color:#719e07">)</span>
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.connection.factory&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;com.microsoft.azure.cosmosdb.cassandra.CosmosDbConnectionFactory&#34;</span><span style="color:#719e07">)</span>
+
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.output.batch.size.rows&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;1&#34;</span><span style="color:#719e07">)</span>
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.connection.connections_per_executor_max&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;10&#34;</span><span style="color:#719e07">)</span>
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.output.concurrent.writes&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;1000&#34;</span><span style="color:#719e07">)</span>
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.concurrent.reads&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;512&#34;</span><span style="color:#719e07">)</span>
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.output.batch.grouping.buffer.size&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;1000&#34;</span><span style="color:#719e07">)</span>
+spark<span style="color:#719e07">.</span>conf<span style="color:#719e07">.</span>set<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;spark.cassandra.connection.keep_alive_ms&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;600000000&#34;</span><span style="color:#719e07">)</span>
+</code></pre></div><p>You can perform aggregations, such as <code>average</code>, <code>min/max</code>, <code>sum</code> etc.:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-scala" data-lang="scala">spark
+  <span style="color:#719e07">.</span>read
+  <span style="color:#719e07">.</span>cassandraFormat<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;books&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;books_ks&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;&#34;</span><span style="color:#719e07">)</span>
+  <span style="color:#719e07">.</span>load<span style="color:#719e07">()</span>
+  <span style="color:#719e07">.</span>select<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;book_price&#34;</span><span style="color:#719e07">)</span>
+  <span style="color:#719e07">.</span>agg<span style="color:#719e07">(</span>avg<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;book_price&#34;</span><span style="color:#719e07">))</span>
+  <span style="color:#719e07">.</span>show
+
+spark
+  <span style="color:#719e07">.</span>read
+  <span style="color:#719e07">.</span>cassandraFormat<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;books&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;books_ks&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;&#34;</span><span style="color:#719e07">)</span>
+  <span style="color:#719e07">.</span>load<span style="color:#719e07">()</span>
+  <span style="color:#719e07">.</span>select<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;book_id&#34;</span><span style="color:#719e07">,</span><span style="color:#2aa198">&#34;book_price&#34;</span><span style="color:#719e07">)</span>
+  <span style="color:#719e07">.</span>agg<span style="color:#719e07">(</span>min<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;book_price&#34;</span><span style="color:#719e07">))</span>
+  <span style="color:#719e07">.</span>show
+
+spark
+  <span style="color:#719e07">.</span>read
+  <span style="color:#719e07">.</span>cassandraFormat<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;books&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;books_ks&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;&#34;</span><span style="color:#719e07">)</span>
+  <span style="color:#719e07">.</span>load<span style="color:#719e07">()</span>
+  <span style="color:#719e07">.</span>select<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;book_price&#34;</span><span style="color:#719e07">)</span>
+  <span style="color:#719e07">.</span>agg<span style="color:#719e07">(</span>sum<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;book_price&#34;</span><span style="color:#719e07">))</span>
+  <span style="color:#719e07">.</span>show
+</code></pre></div><h3 id="connect-everything-using-the-gremlin-graph-api">Connect everything using the Gremlin (Graph) API</h3>
+<p>As part of a personalized customer experience, your application may need to provide recommendations for products on the website. For example, &ldquo;people who bought product X also bought product Y&rdquo;. Your use cases might also need to predict customer behavior, or connect people with others with similar interests.</p>
+<p><a href="https://docs.microsoft.com/azure/cosmos-db/gremlin-support?WT.mc_id=data-12713-abhishgu">Azure Cosmos DB supports Apache Tinkerpop&rsquo;s graph traversal language</a> (known as Gremlin). There are many use cases with give rise to common problems associated with lack of flexibility and relational approaches. For example, managing connected social networks, Geospatial use cases such as finding a location of interest within an area or locate the shortest/optimal route between two location, or modelling network and connections between IoT devices as a graph in order to build a better understanding of the state of your devices and assets. On top of this, you can continue to enjoy features common to all the Azure Cosmos DB APIs such as global distribution, elastic scaling of storage and throughput, automatic indexing and query and tunable consistency levels.</p>
+<p>For example, you could use the following commands to add three vertices for product and two edges for related-purchases to a graph:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">g.addV<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;product&#39;</span><span style="color:#719e07">)</span>.property<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;productName&#39;</span>, <span style="color:#2aa198">&#39;Industrial Saw&#39;</span><span style="color:#719e07">)</span>.property<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;description&#39;</span>, <span style="color:#2aa198">&#39;Cuts through anything&#39;</span><span style="color:#719e07">)</span>.property<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;quantity&#39;</span>, 261<span style="color:#719e07">)</span>
+g.addV<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;product&#39;</span><span style="color:#719e07">)</span>.property<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;productName&#39;</span>, <span style="color:#2aa198">&#39;Belt Sander&#39;</span><span style="color:#719e07">)</span>.property<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;description&#39;</span>, <span style="color:#2aa198">&#39;Smoothes rough edges&#39;</span><span style="color:#719e07">)</span>.property<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;quantity&#39;</span>, 312<span style="color:#719e07">)</span>
+g.addV<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;product&#39;</span><span style="color:#719e07">)</span>.property<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;productName&#39;</span>, <span style="color:#2aa198">&#39;Cordless Drill&#39;</span><span style="color:#719e07">)</span>.property<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;description&#39;</span>, <span style="color:#2aa198">&#39;Bores holes&#39;</span><span style="color:#719e07">)</span>.property<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;quantity&#39;</span>, 647<span style="color:#719e07">)</span>
+
+g.V<span style="color:#719e07">()</span>.hasLabel<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;product&#39;</span><span style="color:#719e07">)</span>.has<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;productName&#39;</span>, <span style="color:#2aa198">&#39;Industrial Saw&#39;</span><span style="color:#719e07">)</span>.addE<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;boughtWith&#39;</span><span style="color:#719e07">)</span>.to<span style="color:#719e07">(</span>g.V<span style="color:#719e07">()</span>.hasLabel<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;product&#39;</span><span style="color:#719e07">)</span>.has<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;productName&#39;</span>, <span style="color:#2aa198">&#39;Belt Sander&#39;</span><span style="color:#719e07">))</span>
+g.V<span style="color:#719e07">()</span>.hasLabel<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;product&#39;</span><span style="color:#719e07">)</span>.has<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;productName&#39;</span>, <span style="color:#2aa198">&#39;Industrial Saw&#39;</span><span style="color:#719e07">)</span>.addE<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;boughtWith&#39;</span><span style="color:#719e07">)</span>.to<span style="color:#719e07">(</span>g.V<span style="color:#719e07">()</span>.hasLabel<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;product&#39;</span><span style="color:#719e07">)</span>.has<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;productName&#39;</span>, <span style="color:#2aa198">&#39;Cordless Drill&#39;</span><span style="color:#719e07">))</span>
+</code></pre></div><p>Then, you can query the additional products that were purchased along with the &lsquo;Industrial Saw&rsquo;:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">g.V<span style="color:#719e07">()</span>.hasLabel<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;product&#39;</span><span style="color:#719e07">)</span>.has<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;productName&#39;</span>, <span style="color:#2aa198">&#39;Industrial Saw&#39;</span><span style="color:#719e07">)</span>.outE<span style="color:#719e07">(</span><span style="color:#2aa198">&#39;boughtWith&#39;</span><span style="color:#719e07">)</span>
+</code></pre></div><p>Here is what the results will look like:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[
+  {
+    &#34;id&#34;: &#34;6c69fba7-2f76-421f-a24e-92d4b8295d67&#34;,
+    &#34;label&#34;: &#34;boughtWith&#34;,
+    &#34;type&#34;: &#34;edge&#34;,
+    &#34;inVLabel&#34;: &#34;product&#34;,
+    &#34;outVLabel&#34;: &#34;product&#34;,
+    &#34;inV&#34;: &#34;faaf0997-f5d8-4d01-a527-ae29534ac234&#34;,
+    &#34;outV&#34;: &#34;a9b13b8f-258f-4148-99c0-f71b30918146&#34;
+  },
+  {
+    &#34;id&#34;: &#34;946e81a9-8cfa-4303-a999-9be3d67176d5&#34;,
+    &#34;label&#34;: &#34;boughtWith&#34;,
+    &#34;type&#34;: &#34;edge&#34;,
+    &#34;inVLabel&#34;: &#34;product&#34;,
+    &#34;outVLabel&#34;: &#34;product&#34;,
+    &#34;inV&#34;: &#34;82e1556e-f038-4d7a-a02a-f780a2b7215c&#34;,
+    &#34;outV&#34;: &#34;a9b13b8f-258f-4148-99c0-f71b30918146&#34;
+  }
+]
+</code></pre></div><p>In addition to traditional clients, you can use the graph <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/bulk-executor-overview">bulk executor .NET library</a> to perform bulk operations in Azure Cosmos DB Gremlin API. Using this will improve the data migration efficiency as compared to using a Gremlin client. Traditionally, inserting data with Gremlin will require the application send a query at a time that will need to be validated, evaluated, and then executed to create the data. The bulk executor library will handle the validation in the application and send multiple graph objects at a time for each network request. Here is an example of how to create Vertices and Edges:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">IBulkExecutor graphbulkExecutor = <span style="color:#719e07">new</span> GraphBulkExecutor(documentClient, targetCollection);
+
+BulkImportResponse vResponse = <span style="color:#719e07">null</span>;
+BulkImportResponse eResponse = <span style="color:#719e07">null</span>;
+
+<span style="color:#719e07">try</span>
+{
+    vResponse = <span style="color:#719e07">await</span> graphbulkExecutor.BulkImportAsync(
+            Utils.GenerateVertices(numberOfDocumentsToGenerate),
+            enableUpsert: <span style="color:#719e07">true</span>,
+            disableAutomaticIdGeneration: <span style="color:#719e07">true</span>,
+            maxConcurrencyPerPartitionKeyRange: <span style="color:#719e07">null</span>,
+            maxInMemorySortingBatchSize: <span style="color:#719e07">null</span>,
+            cancellationToken: token);
+
+    eResponse = <span style="color:#719e07">await</span> graphbulkExecutor.BulkImportAsync(
+            Utils.GenerateEdges(numberOfDocumentsToGenerate),
+            enableUpsert: <span style="color:#719e07">true</span>,
+            disableAutomaticIdGeneration: <span style="color:#719e07">true</span>,
+            maxConcurrencyPerPartitionKeyRange: <span style="color:#719e07">null</span>,
+            maxInMemorySortingBatchSize: <span style="color:#719e07">null</span>,
+            cancellationToken: token);
+}
+<span style="color:#719e07">catch</span> (DocumentClientException de)
+{
+    Trace.TraceError(<span style="color:#2aa198">&#34;Document client exception: {0}&#34;</span>, de);
+}
+<span style="color:#719e07">catch</span> (Exception e)
+{
+    Trace.TraceError(<span style="color:#2aa198">&#34;Exception: {0}&#34;</span>, e);
+}
+</code></pre></div><p>Although it is possible to model and store this data using the Core (SQL) API as JSON documents, it&rsquo;s not suitable for queries which need to determine relationships between entities (e.g. products).</p>
+<blockquote>
+<p>You may want to explore <a href="https://docs.microsoft.com/azure/cosmos-db/graph-modeling?WT.mc_id=data-12713-abhishgu">Graph data modeling</a> as well as <a href="https://docs.microsoft.com/azure/cosmos-db/graph-partitioning?WT.mc_id=data-12713-abhishgu">data partitioning</a> for the Azure Cosmos DB Gremlin API.</p>
+</blockquote>
+<h3 id="azure-table-storage-on-steroids">Azure Table Storage on steroids!</h3>
+<p>If you have existing applications written for Azure Table storage, they can be migrated to Azure Cosmos DB by using the Table API with no code changes and take advantage of premium capabilities.</p>
+<p>Moving your database from Azure Table Storage into Azure Cosmos DB with a low throughput could bring lots of benefits in terms of latency (single-digit millisecond for reads and writes), throughput, global distribution, comprehensive SLAs and as well as cost (you can use <a href="https://docs.microsoft.com/azure/cosmos-db/serverless?WT.mc_id=data-12713-abhishgu">consumption-based</a> or <a href="https://docs.microsoft.com/azure/cosmos-db/set-throughput?WT.mc_id=data-12713-abhishgu">provisioned capacity</a> modes. Storing table data in Cosmos DB automatically indexes <em>all</em> the properties (without an index management overhead) as opposed to Table Storage that only allows for indexing on the Partition and Row keys.</p>
+<p>The Table API has client SDKs available for .NET, Java, Python, and Node.js. For example, with the Java client, use a connection string to store the table endpoint and credentials:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#268bd2">public</span> <span style="color:#268bd2">static</span> <span style="color:#268bd2">final</span> String storageConnectionString <span style="color:#719e07">=</span>
+    <span style="color:#2aa198">&#34;DefaultEndpointsProtocol=https;&#34;</span> <span style="color:#719e07">+</span> 
+    <span style="color:#2aa198">&#34;AccountName=your_cosmosdb_account;&#34;</span> <span style="color:#719e07">+</span> 
+    <span style="color:#2aa198">&#34;AccountKey=your_account_key;&#34;</span> <span style="color:#719e07">+</span> 
+    <span style="color:#2aa198">&#34;TableEndpoint=https://your_endpoint;&#34;</span> <span style="color:#719e07">;</span>
+</code></pre></div><p>.. and perform CRUD (create, read, update, delete) operations as such:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#719e07">try</span>
+<span style="color:#719e07">{</span>
+    CloudStorageAccount storageAccount <span style="color:#719e07">=</span>
+        CloudStorageAccount<span style="color:#719e07">.</span>parse<span style="color:#719e07">(</span>storageConnectionString<span style="color:#719e07">);</span>
+
+    CloudTableClient tableClient <span style="color:#719e07">=</span> storageAccount<span style="color:#719e07">.</span>createCloudTableClient<span style="color:#719e07">();</span>
+
+    CloudTable cloudTable <span style="color:#719e07">=</span> tableClient<span style="color:#719e07">.</span>getTableReference<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;customers&#34;</span><span style="color:#719e07">);</span>
+    cloudTable<span style="color:#719e07">.</span>createIfNotExists<span style="color:#719e07">();</span>
+
+    <span style="color:#719e07">for</span> <span style="color:#719e07">(</span>String table <span style="color:#719e07">:</span> tableClient<span style="color:#719e07">.</span>listTables<span style="color:#719e07">())</span>
+    <span style="color:#719e07">{</span>
+        System<span style="color:#719e07">.</span>out<span style="color:#719e07">.</span>println<span style="color:#719e07">(</span>table<span style="color:#719e07">);</span>
+    <span style="color:#719e07">}</span>
+
+    CustomerEntity customer <span style="color:#719e07">=</span> <span style="color:#719e07">....;</span>
+    TableOperation insert <span style="color:#719e07">=</span> TableOperation<span style="color:#719e07">.</span>insertOrReplace<span style="color:#719e07">(</span>customer<span style="color:#719e07">);</span>
+    cloudTable<span style="color:#719e07">.</span>execute<span style="color:#719e07">(</span>insert<span style="color:#719e07">);</span>
+
+    TableOperation retrieve <span style="color:#719e07">=</span>
+        TableOperation<span style="color:#719e07">.</span>retrieve<span style="color:#719e07">(</span><span style="color:#2aa198">&#34;Smith&#34;</span><span style="color:#719e07">,</span> <span style="color:#2aa198">&#34;Jeff&#34;</span><span style="color:#719e07">,</span> CustomerEntity<span style="color:#719e07">.</span>class<span style="color:#719e07">);</span>
+    CustomerEntity result <span style="color:#719e07">=</span>
+        cloudTable<span style="color:#719e07">.</span>execute<span style="color:#719e07">(</span>retrieve<span style="color:#719e07">).</span>getResultAsType<span style="color:#719e07">();</span>
+
+    TableOperation del <span style="color:#719e07">=</span> TableOperation<span style="color:#719e07">.</span>delete<span style="color:#719e07">(</span>jeff<span style="color:#719e07">);</span>
+    cloudTable<span style="color:#719e07">.</span>execute<span style="color:#719e07">(</span>del<span style="color:#719e07">);</span>
+<span style="color:#719e07">}</span>
+</code></pre></div><blockquote>
+<p>Refer to <a href="https://docs.microsoft.com/azure/cosmos-db/table-api-faq?WT.mc_id=data-12713-abhishgu">Where is Table API not identical with Azure Table storage behavior?</a> for more details.</p>
+</blockquote>
+<h2 id="conclusion">Conclusion</h2>
+<p>Azure Cosmos DB supports offers a lot of options and flexibility in terms of APIs, and has it&rsquo;s pros and cons depending on your use-case and requirements. Although the Core (SQL) is quite versatile and applicable to a wide range of scenarios, if your data is better represented in terms of relationships, then the Gremlin (graph) API is a suitable choice. In case you have existing applications using Cassandra or MongoDB, then migrating them to the respective Azure Cosmos DB APIs provides a path of least resistance with added benefits. In case you want to migrate from Azure Table Storage and do not want to refactor your application to use the Core (SQL) API, remember that you have the option of choosing the Azure Cosmos DB Table API, that can provide API compatibility with Table Storage as well as capabilities such as guaranteed high availability, automatic secondary indexing and much more!</p>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+					<nav class="nav tags">
+							<ul class="flat">
+								
+								<li><a href="/abhirockzz.github.io/tags/nosql">NoSQL</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/database">Database</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/mongodb">MongoDB</a></li>
+								
+								<li><a href="/abhirockzz.github.io/tags/cassandra">Cassandra</a></li>
+								
+							</ul>
+					</nav>
+				
+			
+		</div>
+		</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> © Abhishek Gupta, 2021 |  <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54762029-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script>feather.replace()</script>
+</body>
+</html>
