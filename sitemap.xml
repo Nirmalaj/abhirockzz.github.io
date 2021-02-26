@@ -3,11 +3,6 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://abhirockzz.github.io/abhirockzz.github.io/</loc>
-    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://abhirockzz.github.io/abhirockzz.github.io/posts/azure-cosmosdb-use-cases-tradeoffs/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
@@ -19,6 +14,11 @@
   
   <url>
     <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/database/</loc>
+    <lastmod>2021-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://abhirockzz.github.io/abhirockzz.github.io/</loc>
     <lastmod>2021-02-24T00:00:00+00:00</lastmod>
   </url>
   
@@ -290,6 +290,10 @@
   <url>
     <loc>https://abhirockzz.github.io/abhirockzz.github.io/tags/tensorflow/</loc>
     <lastmod>2019-01-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://abhirockzz.github.io/abhirockzz.github.io/categories/</loc>
   </url>
   
 </urlset>

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>azure event hubs on Abhishek&#39;s dev blog</title>
+    <title>azure event hubs on Foo Bar Baz</title>
     <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/azure-event-hubs/</link>
-    <description>Recent content in azure event hubs on Abhishek&#39;s dev blog</description>
+    <description>Recent content in azure event hubs on Foo Bar Baz</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
     <copyright>© Abhishek Gupta, 2021</copyright>
     <lastBuildDate>Mon, 13 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/tags/azure-event-hubs/index.xml" rel="self" type="application/rss+xml" />
     <item>

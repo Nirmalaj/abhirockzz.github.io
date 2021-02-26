@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>tensorflow on Abhishek&#39;s dev blog</title>
+    <title>tensorflow on Foo Bar Baz</title>
     <link>https://abhirockzz.github.io/abhirockzz.github.io/tags/tensorflow/</link>
-    <description>Recent content in tensorflow on Abhishek&#39;s dev blog</description>
+    <description>Recent content in tensorflow on Foo Bar Baz</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
     <copyright>© Abhishek Gupta, 2021</copyright>
     <lastBuildDate>Mon, 07 Jan 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://abhirockzz.github.io/abhirockzz.github.io/tags/tensorflow/index.xml" rel="self" type="application/rss+xml" />
     <item>
